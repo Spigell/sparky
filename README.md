@@ -32,7 +32,7 @@ It should sparrowdo scenario, for example we want to build Perl6 application and
 
 ## Set up SCM
 
-You should set up source control resource so that sparky poll the changes and trigger build scenario:
+You should set up source control resource so that sparky poll the changes and trigger the build scenario:
 
     
     $ nano /var/data/sparky/perl6-app/sparky.yaml
