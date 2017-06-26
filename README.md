@@ -1,6 +1,6 @@
 # SYNOPSIS
 
-Sparky is contnues intergation servers based on Sparrow/Sparrowdo ecosystem
+Sparky is a continues integration servers based on Sparrow/Sparrowdo ecosystem.
 
 
 # Description
