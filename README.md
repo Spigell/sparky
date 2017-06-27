@@ -1,6 +1,6 @@
 # SYNOPSIS
 
-Sparky is a continues integration servers based on Sparrow/Sparrowdo ecosystem.
+Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 
 
 # Description
@@ -32,7 +32,7 @@ It should sparrowdo scenario, for example we want to build Perl6 application and
 
 ## Set up SCM
 
-You should set up source control resource so that sparky poll the changes and trigger the build scenario:
+You should set up source control resource so that sparky polls the changes and triggers the build scenario:
 
     
     $ nano /var/data/sparky/perl6-app/sparky.yaml
@@ -41,8 +41,8 @@ You should set up source control resource so that sparky poll the changes and tr
 
 ## Set up executor
 
-By default the build scenario gets execute on the machine you run sparky at, but you can change this
-providing sparrowdo related parameters, as sparky uses sparrowdo to run build scenarios:
+By default the build scenario gets executed on the machine you run sparky at, but you can change this
+providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
 
     $ nano /var/data/sparky/perl6-app/sparky.yaml
 
