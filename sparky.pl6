@@ -3,36 +3,19 @@ sub MAIN (
   Int  :$timeout = 360, 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/sparky-reports', 
 )
-
 {
 
-my %project-state;
-
-  while (True) {
-
-    for dir($root) -> $dir {
-
-      next unless "$dir/sparrowfile".IO ~~ :f;
-      my $project = $dir.basename;
-  
-      my $state = %project-state{$project} || 'unknown';
-  
-      if $state eq 'running' {
-        #say "skip $project as it's already running ...";
-        next;
+  react {
+    sub run-project($dir, $project) {
+      my $cmd = "sparrowdo --sparrowfile=$dir/sparrowfile > $reports-root/$project.txt 2>&1";
+      whenever Proc::Async.new('/bin/sh', '-c', $cmd).start {
+        run-project($dir, $project);
       }
-  
-      say "run {$project} ...";
-  
-      my $p = Promise.start({ shell("sparrowdo --sparrowfile=$dir/sparrowfile > $reports-root/$project.txt 2>&1") });
-
-      %project-state{$project}='running';
-  
-      $p.then({ %project-state{$project}='finished' }); 
-
+    }
+    
+    for dir($root) -> $dir {
+      next unless "$dir/sparrowfile".IO ~~ :f;
+      run-project($dir, $dir.basename);
     }
   }
 } 
-
-
-
