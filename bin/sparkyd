@@ -1,0 +1,36 @@
+sub MAIN (
+  Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
+  Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
+)
+{
+
+  react {
+
+    mkdir $root;
+    mkdir $work-root;
+
+    sub run-project($dir, $project) {
+
+      mkdir "$work-root/$project";
+
+      whenever Proc::Async.new('sparky-runner.pl6', "--dir=$dir", "--project=$project").start {
+        run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
+      }
+    }
+    
+    sub add-dirs() {
+      state %seen;
+      for dir($root) -> $dir {
+        next if %seen{$dir}++;
+        next unless "$dir/sparrowfile".IO ~~ :f;
+        run-project($dir, $dir.basename);
+      }
+    }
+    
+    whenever IO::Notification.watch-path($root) {
+      add-dirs();
+    }
+
+    add-dirs();
+  }
+} 
