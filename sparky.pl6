@@ -1,12 +1,22 @@
 sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
+  Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports', 
 )
 {
 
+  
   react {
+
+    mkdir $root;
+    mkdir $work-root;
+    mkdir $reports-root;
+
     sub run-project($dir, $project) {
-      my $cmd = "sparrowdo --sparrowfile=$dir/sparrowfile > $reports-root/$project.txt 2>&1";
+
+      mkdir "$work-root/$project";
+
+      my $cmd = "sparrowdo --sparrowfile=$dir/sparrowfile --cwd=$work-root/$project  > $reports-root/$project.txt 2>&1";
       whenever Proc::Async.new('/bin/sh', '-c', $cmd).start {
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
