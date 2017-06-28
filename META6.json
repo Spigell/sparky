@@ -11,8 +11,9 @@
         "bugtracker" : "https://github.com/melezhik/sparky/issues",
         "source" : "https://github.com/melezhik/sparky.git"
     },
-   "provides" : {
+  "provides" : {
   },
+  "resources" : [ "sparky-runner.sh" ],
   "source-url"  : "https://github.com/melezhik/sparky.git",
   "license": "Artistic-2.0"
 }

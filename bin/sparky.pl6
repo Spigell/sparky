@@ -5,6 +5,7 @@ sub MAIN (
 )
 {
 
+  constant SPARKY_RUNNER = %?RESOURCES<sparky-runner.sh>.Str;
   
   react {
 
@@ -16,7 +17,8 @@ sub MAIN (
 
       mkdir "$work-root/$project";
 
-      my $cmd = "sparrowdo --sparrowfile=$dir/sparrowfile --cwd=$work-root/$project  > $reports-root/$project.txt 2>&1";
+      my $cmd = "sparky-runner.sh $dir/sparrowfile $work-root/$project $reports-root/$project.txt";
+
       whenever Proc::Async.new('/bin/sh', '-c', $cmd).start {
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }

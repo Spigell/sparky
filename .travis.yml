@@ -10,6 +10,6 @@ before_install:
   - cd zef
   - perl6 -Ilib bin/zef install . && cd ../
 
-install:
+script:
     - zef install .
 
