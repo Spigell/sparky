@@ -17,9 +17,11 @@ sub MAIN (
 
       mkdir "$work-root/$project";
 
-      my $cmd = "sparky-runner.sh $dir/sparrowfile $work-root/$project $reports-root/$project.txt";
-
-      whenever Proc::Async.new('/bin/sh', '-c', $cmd).start {
+      whenever Proc::Async.new(
+        '/bin/sh', 
+        SPARKY_RUNNER, "$dir/sparrowfile", 
+        "$work-root/$project", "$reports-root/$project.txt"
+        ).start {
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }
