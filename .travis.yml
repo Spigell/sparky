@@ -10,6 +10,11 @@ before_install:
   - cd zef
   - perl6 -Ilib bin/zef install . && cd ../
 
-script:
+
+install:
     - zef install .
+
+
+script:
+  - prove -vr -e 'perl6 -Ilib' t/
 

@@ -30,7 +30,7 @@ It should sparrowdo scenario, for example we want to build Perl6 application and
 
     $ nano /var/data/sparky/perl6-app/sparrowfile
 
-    zef-install '.', %( depsonly => True );
+    zef '.', %( depsonly => True );
 
     bash 'prove6 -l';
 

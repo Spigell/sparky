@@ -13,7 +13,6 @@
     },
   "provides" : {
   },
-  "resources" : [ "sparky-runner.sh" ],
   "source-url"  : "https://github.com/melezhik/sparky.git",
   "license": "Artistic-2.0"
 }
