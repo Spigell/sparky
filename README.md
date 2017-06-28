@@ -2,6 +2,10 @@
 
 Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 
+# Build status
+
+[![Build Status](https://travis-ci.org/melezhik/sparky.svg)](https://travis-ci.org/melezhik/sparky)
+
 
 # Description
 
