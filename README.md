@@ -53,8 +53,8 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
 
 ## Set up executor
 
-By default the build scenario gets executed on the same machine you run sparky at, but you can change this
-providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
+By default the build scenario gets executed _on the same machine you run sparky at_, but you can change this
+to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
 
     $ nano /var/data/sparky/bailador-app/sparky.yaml
 
