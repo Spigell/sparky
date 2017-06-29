@@ -36,8 +36,16 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
 
     package-install 'git';
 
-    bash "git clone https://github.com/Bailador/Bailador.git .";
-    
+    bash(q:to/HERE/);
+      set -e;
+      if test -d .git; then
+        git pull
+      else
+        git clone https://github.com/Bailador/Bailador.git . 
+      fi
+
+    HERE
+
     zef '.', %( depsonly => True );
 
     bash 'prove6 -l';
@@ -69,6 +77,7 @@ However this is how you can see them by using nginx:
     $ nano /etc/nginx/sites-enabled/default
 
     location /sparky {
+      charset UTF-8;
       autoindex on;
     }
 
