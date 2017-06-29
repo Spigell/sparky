@@ -5,6 +5,7 @@
   "description" : "Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem",
   "authors" : [ "Alexey Melezhik"],
   "depends"     : [
+                    "YAMLish"
                   ],
   "source-type" : "git",
   "support" : {
