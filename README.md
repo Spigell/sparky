@@ -18,37 +18,37 @@ You need to run the sparky daemon first pointing it a root directory with projec
 
     $ sparkyd --root /var/data/sparky
 
+Sparky daemon will be building the projects found in the root directory every one minute.
+
+
 ## Create a project
 
 It should be just a directory located at the sparky root:
 
-    $ mkdir /var/data/sparky/perl6-app
+    $ mkdir /var/data/sparky/bailador-app
 
 ## Define build scenario
 
-It should sparrowdo scenario, for example we want to build Perl6 application and run unit tests:
+It should sparrowdo scenario, for example we want to check out a source code from Git,
+install dependencies and then run unit tests. Say it's going to be a Bailador project:
 
-    $ nano /var/data/sparky/perl6-app/sparrowfile
+    $ nano /var/data/sparky/bailador-app/sparrowfile
 
+    package-install 'git';
+
+    bash "git clone https://github.com/Bailador/Bailador.git .";
+    
     zef '.', %( depsonly => True );
 
     bash 'prove6 -l';
 
-## Set up SCM
-
-You should set up source control resource so that sparky polls the changes and triggers the build scenario:
-
-    
-    $ nano /var/data/sparky/perl6-app/sparky.yaml
-
-    scm: https://github.com/Bailador/Bailador.git
 
 ## Set up executor
 
-By default the build scenario gets executed on the machine you run sparky at, but you can change this
+By default the build scenario gets executed on the same machine you run sparky at, but you can change this
 providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
 
-    $ nano /var/data/sparky/perl6-app/sparky.yaml
+    $ nano /var/data/sparky/bailador-app/sparky.yaml
 
     sparrowdo:
       - host: 192.168.0.1
