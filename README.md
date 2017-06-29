@@ -59,9 +59,25 @@ You read about the all [available parameters](https://github.com/melezhik/sparro
 
 ## See the reports
 
-    Just run you browser and find the reports related to the `perl6app` project 
+Right now reports are just static files and there is no dedicated API to view them.
+However this is how you can see them by using nginx:
 
-    firefox 127.0.0.1:5000
+    $ sudo mkdir -p /var/www/html/sparky
+    $ sudo chmod a+x /var/www/html/sparky
+    $ sudo chmod a+w /var/www/html/sparky
+
+    $ nano /etc/nginx/sites-enabled/default
+
+    location /sparky {
+      autoindex on;
+    }
+
+    $ sparkyd --root /var/data/sparky --reports-root=/var/www/html/sparky
+  
+    $ sudo service nginx reload
+
+    $ firefox 127.0.0.1:/sparky
+
 
 # Author
 

@@ -1,6 +1,7 @@
 sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
+  Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
 )
 {
 
@@ -13,7 +14,13 @@ sub MAIN (
 
       mkdir "$work-root/$project";
 
-      whenever Proc::Async.new('sparky-runner.pl6', "--dir=$dir", "--project=$project").start {
+      whenever Proc::Async.new(
+        'sparky-runner.pl6', 
+        "--dir=$dir", 
+        "--project=$project",
+        "--reports-root=$reports-root"
+      ).start {
+        sleep(60);
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }
