@@ -19,7 +19,7 @@ sub MAIN (
     %config = load-yaml(slurp "$dir/sparky.yaml")<sparrowdo>;
   }
 
-  my $sparrowdo-run = "sparrowdo --no_color --sparrow_root=/opt/sparky-sparrowdo/$project";
+  my $sparrowdo-run = "sparrowdo --no_color -sparrow_root=/opt/sparky-sparrowdo/$project";
 
   if %config<host> {
     $sparrowdo-run ~= " --host=" ~ %config<host>;
@@ -58,6 +58,6 @@ sub MAIN (
 
 
   shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project.txt" ~ ' 2>&1');
-  shell("$sparrowdo-run --sparrowfile=$dir/sparrowfile 1>>$reports-root/$project.txt" ~ ' 2>&1');
+  shell("$sparrowdo-run --sparrowfile=$dir/sparrowfile --cwd=/var/data/sparky/$project 1>>$reports-root/$project.txt" ~ ' 2>&1');
 
 }
