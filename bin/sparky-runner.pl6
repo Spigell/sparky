@@ -11,7 +11,7 @@ sub MAIN (
 
   say 'start sparrowdo for project ' ~ $project;
 
-  shell("sparrowdo --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --local_mode 1>$reports-root/$project.txt");
-  shell("sparrowdo --sparrowfile=$dir/sparrowfile --cwd=/var/data/sparky/$project --local_mode 1>$reports-root/$project.txt");
+  shell("sparrowdo --uuid=$project --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --local_mode 1>$reports-root/$project.txt");
+  shell("sparrowdo --uuid=$project --sparrowfile=$dir/sparrowfile --cwd=/var/data/sparky/$project --local_mode 1>$reports-root/$project.txt");
 
 }
