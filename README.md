@@ -85,7 +85,7 @@ However this is how you can see them by using nginx:
   
     $ sudo service nginx reload
 
-    $ firefox 127.0.0.1:/sparky
+    $ firefox 127.0.0.1/sparky
 
 
 # Author
