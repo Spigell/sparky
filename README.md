@@ -59,8 +59,8 @@ to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sp
     $ nano /var/data/sparky/bailador-app/sparky.yaml
 
     sparrowdo:
-      - host: 192.168.0.1
-      - ssh_provate_key: /path/to/ssh_private/key.pem
+      - host: '192.168.0.1'
+      - ssh_private_key: /path/to/ssh_private/key.pem
       - ssh_user: sparky
 
 You read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in sparrowdo documentation.
