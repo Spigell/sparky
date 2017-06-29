@@ -81,9 +81,9 @@ However this is how you can see them by using nginx:
       autoindex on;
     }
 
-    $ sparkyd --root /var/data/sparky --reports-root=/var/www/html/sparky
-  
     $ sudo service nginx reload
+
+    $ sparkyd --root /var/data/sparky --reports-root=/var/www/html/sparky
 
     $ firefox 127.0.0.1/sparky
 
