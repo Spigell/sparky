@@ -14,9 +14,10 @@ but if you're impatient I'll brief you.
 
 ## Installation
 
-    $ git clone https://github.com/melezhik/sparky.git .
+    $ git clone https://github.com/melezhik/sparky.git
+    $ cd sparky && zef install .
     $ sudo apt-get install sqlite3
-    $ cd sparky && perl6 db-init.pl6 --root /var/data/sparky 
+    $ perl6 db-init.pl6 --root /var/data/sparky 
 
 ## Run daemon
 
