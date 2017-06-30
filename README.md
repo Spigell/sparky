@@ -110,7 +110,7 @@ However this is how you can see them by using nginx:
 
 You may check builds statues and times in runtime via sqlite database created by sparky:
 
-    $ sqlite3 ~/.sparky/db.sqlite3 
+    $ sqlite3 $sparky-root/db.sqlite3 
 
     sqlite> .schema builds
     CREATE TABLE builds (
