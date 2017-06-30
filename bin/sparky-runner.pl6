@@ -14,7 +14,7 @@ sub MAIN (
 
   mkdir $dir;
 
-  mkdir $reports-root;
+  mkdir "$reports-root/$project";
 
   say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
 
@@ -64,8 +64,8 @@ sub MAIN (
   }
 
   if ! $stdout {
-    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project.txt" ~ ' 2>&1');
-    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$reports-root/$project.txt" ~ ' 2>&1');
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project/build-$build_id.txt" ~ ' 2>&1');
+    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$reports-root/$project/build-$build_id.txt" ~ ' 2>&1');
   } else{
     shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap"  ~ ' 2>&1');
     shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
