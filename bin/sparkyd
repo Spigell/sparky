@@ -4,6 +4,7 @@ sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
+  Int  :$timeout = 300,
 )
 
 
@@ -47,7 +48,7 @@ sub MAIN (
         "--db=$db-name",
         "--build_id=$build_id"
       ).start {
-        sleep(180);
+        sleep($timeout);
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }

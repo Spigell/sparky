@@ -24,8 +24,17 @@ You need to run the sparky daemon first pointing it a root directory with projec
 
     $ sparkyd --root /var/data/sparky
 
-Sparky daemon will be building the projects found in the root directory every three minute.
+Sparky daemon will be building the projects found in the root directory every 5 minutes.
 
+You can change the timeout by applying `--timeout` parameter:
+
+    $ sparkyd --root /var/data/sparky --timeout=600 # every 10 minutes
+
+Running in daemonized mode.
+
+At the moment sparky can't daemonize itself, as temporary workaround use linux `nohup` command:
+
+    $ nohup sparkyd &
 
 ## Create a project
 
