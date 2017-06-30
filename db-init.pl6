@@ -2,7 +2,7 @@ use v6;
 use DBIish;
 
 sub MAIN (
-  Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky',
+  Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects',
 )
 
 {
