@@ -111,7 +111,7 @@ You may check builds statues and times in runtime via sqlite database created by
 
     $ sqlite3 ~/.sparky/db.sqlite3 
 
-    .schema builds
+    sqlite> .schema builds
     CREATE TABLE builds (
         id          INTEGER PRIMARY KEY AUTOINCREMENT,
         project     varchar(4),
