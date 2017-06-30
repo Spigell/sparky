@@ -64,11 +64,12 @@ sub MAIN (
   }
 
   if ! $stdout {
-    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project/build-$build_id.txt" ~ ' 2>&1');
-    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$reports-root/$project/build-$build_id.txt" ~ ' 2>&1');
+    my $report-file = "$reports-root/$project/build-$build_id.txt";
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$report-file" ~ ' 2>&1');
+    shell("echo >> $report-file && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$report-file" ~ ' 2>&1');
   } else{
     shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap"  ~ ' 2>&1');
-    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
+    shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
   if $db and $build_id {
