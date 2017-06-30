@@ -15,7 +15,7 @@ sub MAIN (
     mkdir $root;
     mkdir $work-root;
 
-    my $db-name = "$root/../db.sqlite3".IO.absolute;
+    my $db-name = "$root/db.sqlite3".IO.absolute;
     my $dbh = DBIish.connect("SQLite", database => $db-name );
 
     sub run-project($dir, $project) {
