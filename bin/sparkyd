@@ -20,7 +20,7 @@ sub MAIN (
         "--project=$project",
         "--reports-root=$reports-root"
       ).start {
-        sleep(60);
+        sleep(180);
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }

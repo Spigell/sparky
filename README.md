@@ -18,7 +18,7 @@ You need to run the sparky daemon first pointing it a root directory with projec
 
     $ sparkyd --root /var/data/sparky
 
-Sparky daemon will be building the projects found in the root directory every one minute.
+Sparky daemon will be building the projects found in the root directory every three minute.
 
 
 ## Create a project
