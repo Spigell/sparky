@@ -145,9 +145,9 @@ You may check builds statues and times in runtime via sqlite database created by
 
 Field state has one of tther possible values:
 
-* 0 - build is running
-* 1 - build succeeded
-* 0 - build failed
+* 0  - build is running
+* 1  - build succeeded
+* -1 - build failed
 
 # Command line client
 
