@@ -98,7 +98,7 @@ However this is how you can see them by using nginx:
 
 ## SQLite API
 
-You may check builds statues and time via sqlite database created by sparky:
+You may check builds statues and times in runtime via sqlite database created by sparky:
 
     $ sqlite3 ~/.sparky/db.sqlite3 
 
