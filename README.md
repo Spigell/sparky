@@ -87,6 +87,11 @@ However this is how you can see them by using nginx:
 
     $ firefox 127.0.0.1/sparky
 
+# Command line client
+
+You build run a certain project using sparky command client called `sparky-runner.pl6`
+
+    $ sparky-runner.pl6 --dir=/home/melezhik/.sparky/projects/bailador-app/  --stdout
 
 # Author
 

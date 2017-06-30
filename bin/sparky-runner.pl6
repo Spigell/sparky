@@ -1,9 +1,10 @@
 use YAMLish;
 
 sub MAIN (
-  Str  :$dir,
-  Str  :$project,
+  Str  :$dir!,
+  Str  :$project = $dir.IO.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
+  Bool :$stdout = False
 )
 {
 
@@ -56,8 +57,12 @@ sub MAIN (
     $sparrowdo-run ~= " --verbose";
   }
 
-
-  shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project.txt" ~ ' 2>&1');
-  shell("$sparrowdo-run --sparrowfile=$dir/sparrowfile --cwd=/var/data/sparky/$project 1>>$reports-root/$project.txt" ~ ' 2>&1');
+  if ! $stdout {
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$reports-root/$project.txt" ~ ' 2>&1');
+    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$reports-root/$project.txt" ~ ' 2>&1');
+  } else{
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap"  ~ ' 2>&1');
+    shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
+  }
 
 }
