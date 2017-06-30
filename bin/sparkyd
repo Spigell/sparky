@@ -1,8 +1,12 @@
+use DBIish;
+
 sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
 )
+
+
 {
 
   react {
@@ -10,15 +14,38 @@ sub MAIN (
     mkdir $root;
     mkdir $work-root;
 
+    my $db-name = "$root/../db.sqlite3".IO.absolute;
+    my $dbh = DBIish.connect("SQLite", database => $db-name );
+
     sub run-project($dir, $project) {
 
       mkdir "$work-root/$project";
+
+      my $sth = $dbh.prepare(q:to/STATEMENT/);
+        INSERT INTO builds (project, state)
+        VALUES ( ?,?)
+      STATEMENT
+      $sth.execute($project, 0); 
+
+      $sth = $dbh.prepare(q:to/STATEMENT/);
+          SELECT max(ID) AS build_id
+          FROM builds
+          STATEMENT
+      
+      $sth.execute();
+      
+      my @rows = $sth.allrows();
+      my $build_id = @rows[0][0];
+      
+      $sth.finish;
 
       whenever Proc::Async.new(
         'sparky-runner.pl6', 
         "--dir=$dir", 
         "--project=$project",
-        "--reports-root=$reports-root"
+        "--reports-root=$reports-root",
+        "--db=$db-name",
+        "--build_id=$build_id"
       ).start {
         sleep(180);
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;

@@ -12,6 +12,14 @@ Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) first,
 but if you're impatient I'll brief you.
 
+## Installation
+
+    $ git clone https://github.com/melezhik/sparky.git .
+    $ sudo apt-get install sqlite3
+    $ cd sparky && perl6 db-init.pl6 --root /var/data/sparky 
+
+## Initialization
+
 ## Run daemon
 
 You need to run the sparky daemon first pointing it a root directory with projects  

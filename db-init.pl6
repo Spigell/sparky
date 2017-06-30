@@ -1,11 +1,15 @@
 use v6;
 use DBIish;
 
-my $sparky-root = '/home/' ~ %*ENV<USER> ~ '/.sparky';
+sub MAIN (
+  Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky',
+)
 
-mkdir $sparky-root;
+{
 
-my $db-name = "$sparky-root/db.sqlite3";
+mkdir $root;
+
+my $db-name = "$root/db.sqlite3";
 
 my $dbh = DBIish.connect("SQLite", database => $db-name );
 
@@ -23,3 +27,4 @@ $sth = $dbh.do(q:to/STATEMENT/);
     STATEMENT
 
 
+}

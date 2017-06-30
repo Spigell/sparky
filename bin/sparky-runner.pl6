@@ -1,10 +1,14 @@
 use YAMLish;
+use DBIish;
 
 sub MAIN (
   Str  :$dir!,
   Str  :$project = $dir.IO.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
-  Bool :$stdout = False
+  Bool :$stdout = False,
+  Str  :$db,
+  Int  :$build_id,
+
 )
 {
 
@@ -12,7 +16,7 @@ sub MAIN (
 
   mkdir $reports-root;
 
-  say 'start sparrowdo for project ' ~ $project;
+  say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
 
   my %config = Hash.new;
 
@@ -67,4 +71,27 @@ sub MAIN (
     shell("cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
+  if $db and $build_id {
+    my $dbh = DBIish.connect("SQLite", database => $db );
+    $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
+  }
+
+  CATCH {
+
+
+      # will definitely catch all the exception 
+      default { 
+
+        .Str.say; 
+
+        if $db and $build_id {
+          my $dbh = DBIish.connect("SQLite", database => $db );
+          $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
+        }
+  
+      }
+
+  }
+
 }
+
