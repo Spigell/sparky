@@ -21,8 +21,10 @@ sub MAIN (
   my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f {
-    %config = load-yaml(slurp "$dir/sparky.yaml")<sparrowdo>;
+    my %yaml-config = load-yaml(slurp "$dir/sparky.yaml");
+    %config = %yaml-config<sparrowdo> if %yaml-config<sparrowdo>;
   }
+
 
   my $sparrowdo-run = "sparrowdo --sparrow_root=/opt/sparky-sparrowdo/$project";
 
@@ -85,7 +87,8 @@ sub MAIN (
       # will definitely catch all the exception 
       default { 
 
-        #.Str.say; 
+        warn .say;
+ 
         say "project: $project build: $build_id failed";
 
         if $db and $build_id {

@@ -26,5 +26,7 @@ $sth = $dbh.do(q:to/STATEMENT/);
     )
     STATEMENT
 
+say "db populated at $db-name";
 
 }
+
