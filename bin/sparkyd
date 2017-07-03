@@ -1,4 +1,6 @@
 use DBIish;
+use Time::Crontab;
+use YAMLish;
 
 sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
@@ -7,8 +9,8 @@ sub MAIN (
   Int  :$timeout = 300,
 )
 
-
 {
+
 
   react {
 
@@ -19,6 +21,21 @@ sub MAIN (
     my $dbh = DBIish.connect("SQLite", database => $db-name );
 
     sub run-project($dir, $project) {
+
+      if "$dir/sparky.yaml".IO ~~ :f {
+        my %config = load-yaml(slurp "$dir/sparky.yaml");
+        if %config<crontab> {
+          my $crontab = %config<crontab>;
+          my $tc = Time::Crontab.new(:$crontab);
+          if $tc.match(DateTime.now, :truncate(True)) {
+            #say "$project is passed by cron: $crontab ...";
+          } else {
+            #say "$project is skipped by cron: $crontab ...";
+            run-project($dir, $project);
+            return 
+          }
+        }
+      }
 
       mkdir "$work-root/$project";
 

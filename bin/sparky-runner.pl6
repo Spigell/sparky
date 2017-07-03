@@ -77,13 +77,16 @@ sub MAIN (
     $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
   }
 
+  say "project: $project build: $build_id finished";
+
   CATCH {
 
 
       # will definitely catch all the exception 
       default { 
 
-        .Str.say; 
+        #.Str.say; 
+        say "project: $project build: $build_id failed";
 
         if $db and $build_id {
           my $dbh = DBIish.connect("SQLite", database => $db );
