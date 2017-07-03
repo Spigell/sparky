@@ -1,20 +1,53 @@
 use YAMLish;
 use DBIish;
+use Time::Crontab;
 
 sub MAIN (
   Str  :$dir!,
   Str  :$project = $dir.IO.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
   Bool :$stdout = False,
-  Str  :$db,
-  Int  :$build_id,
 
 )
 {
 
+  if "$dir/sparky.yaml".IO ~~ :f {
+    my %config = load-yaml(slurp "$dir/sparky.yaml");
+    if %config<crontab> {
+      my $crontab = %config<crontab>;
+      my $tc = Time::Crontab.new(:$crontab);
+      if $tc.match(DateTime.now, :truncate(True)) {
+        say "$project is passed by cron: $crontab ...";
+      } else {
+        say "$project is skipped by cron: $crontab ... ";
+        return;
+      }
+    }
+  }
+
   mkdir $dir;
 
   mkdir "$reports-root/$project";
+
+  my $dbh = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute );
+
+  my $sth = $dbh.prepare(q:to/STATEMENT/);
+    INSERT INTO builds (project, state)
+    VALUES ( ?,?)
+  STATEMENT
+  $sth.execute($project, 0);
+
+  $sth = $dbh.prepare(q:to/STATEMENT/);
+      SELECT max(ID) AS build_id
+      FROM builds
+      STATEMENT
+
+  $sth.execute();
+
+  my @rows = $sth.allrows();
+  my $build_id = @rows[0][0];
+
+  $sth.finish;
 
   say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
 
@@ -74,10 +107,7 @@ sub MAIN (
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
-  if $db and $build_id {
-    my $dbh = DBIish.connect("SQLite", database => $db );
-    $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
-  }
+  $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
 
   say "project: $project build: $build_id finished";
 
@@ -86,16 +116,9 @@ sub MAIN (
 
       # will definitely catch all the exception 
       default { 
-
         warn .say;
- 
         say "project: $project build: $build_id failed";
-
-        if $db and $build_id {
-          my $dbh = DBIish.connect("SQLite", database => $db );
-          $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
-        }
-  
+        $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
       }
 
   }
