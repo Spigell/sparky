@@ -14,9 +14,10 @@ but if you're impatient I'll brief you.
 
 ## Installation
 
-    $ git clone https://github.com/melezhik/sparky.git .
+    $ git clone https://github.com/melezhik/sparky.git
+    $ cd sparky && zef install .
     $ sudo apt-get install sqlite3
-    $ cd sparky && perl6 db-init.pl6 --root /var/data/sparky 
+    $ perl6 db-init.pl6 --root /var/data/sparky 
 
 ## Run daemon
 
@@ -109,9 +110,9 @@ However this is how you can see them by using nginx:
 
 You may check builds statues and times in runtime via sqlite database created by sparky:
 
-    $ sqlite3 ~/.sparky/db.sqlite3 
+    $ sqlite3 $sparky-root/db.sqlite3 
 
-    .schema builds
+    sqlite> .schema builds
     CREATE TABLE builds (
         id          INTEGER PRIMARY KEY AUTOINCREMENT,
         project     varchar(4),
@@ -145,9 +146,9 @@ You may check builds statues and times in runtime via sqlite database created by
 
 Field state has one of tther possible values:
 
-* 0 - build is running
-* 1 - build succeeded
-* 0 - build failed
+* 0  - build is running
+* 1  - build succeeded
+* -1 - build failed
 
 # Command line client
 
