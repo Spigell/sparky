@@ -84,6 +84,18 @@ to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sp
 
 You read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in sparrowdo documentation.
 
+## Run by cron
+
+It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
+for example to run a build every hour at 30,50 or 55 minute say this:
+
+    $ nano /var/data/sparky/bailador-app/sparky.yaml
+
+    crontab: "30,50,55 * * * *"
+
+
+Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
+
 ## See the reports
 
 Right now reports are just static files and there is no dedicated API to view them.
