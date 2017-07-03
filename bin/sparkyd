@@ -32,7 +32,7 @@ sub MAIN (
           if $tc.match(DateTime.now, :truncate(True)) {
             say "$project is passed by cron: $crontab ...";
           } else {
-            say "$project is skipped by cron: $crontab ...";
+            # say "$project is skipped by cron: $crontab ...";
             $skip =  True
           }
         }
