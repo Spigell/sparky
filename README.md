@@ -35,6 +35,10 @@ You can change the timeout by applying `--timeout` parameter:
 
     $ sparkyd --root=/home/$USER/.sparky/projects --timeout=600 # sleep 10 minutes
 
+You can set timeout as well by using `SPARKY_TIMEOUT` environment variable:
+
+    $ SPARKY_TIMEOUT=30 sparkyd ...
+
 Running in daemonized mode.
 
 At the moment sparky can't daemonize itself, as temporary workaround use linux `nohup` command:
@@ -176,6 +180,10 @@ Field state has one of tther possible values:
 You build run a certain project using sparky command client called `sparky-runner.pl6`
 
     $ sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app/  --stdout
+
+You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CRON` environment variable
+
+    $ SPARKY_SKIP_CRON=1 sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app/  --stdout
 
 # Sparky runtime parameters
 

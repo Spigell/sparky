@@ -11,9 +11,9 @@ sub MAIN (
 )
 {
 
-  sleep($timeout) unless $stdout;
+  sleep($timeout) unless ( $stdout or %*ENV<SPARKY_SKIP_CRON> );
 
-  if "$dir/sparky.yaml".IO ~~ :f and ! $stdout  {
+  if "$dir/sparky.yaml".IO ~~ :f and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
     my %config = load-yaml(slurp "$dir/sparky.yaml");
     if %config<crontab> {
       my $crontab = %config<crontab>;
