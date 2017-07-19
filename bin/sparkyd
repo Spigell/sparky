@@ -21,7 +21,7 @@ sub MAIN (
         "--project=$project",
         "--reports-root=$reports-root"
       ).start {
-        Promise.in($timeout){ run-project($dir, $project) } if "$dir/sparrowfile".IO ~~ :f ;
+        run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }
     
