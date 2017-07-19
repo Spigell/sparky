@@ -55,23 +55,27 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
     $ nano /home/$USER/.sparky/projects/bailador-app/sparrowfile
 
     package-install 'git';
-    
+
     bash q:to/HERE/;
+
       set -e;
       if test -d .git; then
         git pull
       else
         git clone https://github.com/Bailador/Bailador.git . 
       fi
-    
+
     HERE
-    
+
     zef 'Path::Iterator';
     zef '.', %( depsonly => True );
     zef 'TAP::Harness';
-    
-    bash 'export PATH=/opt/rakudo/share/perl6/site/bin/:/opt/rakudo/bin:$PATH && prove6 -l', %(
-      debug => True
+
+    bash 'prove6 -l', %(
+      debug => True,
+      envvars => %(
+        PATH => '/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH'
+      )
     );
     
 ## Set up executor
