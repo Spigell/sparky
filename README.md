@@ -175,26 +175,28 @@ All this parameters could be overridden by command line ( `--root`, `--work-root
 
 ##  Rood directory
 
-This is directory where sparky looks for projects
+This is directory where sparky looks for projects:
 
-  /home/$USER/.sparky/projects/
+    /home/$USER/.sparky/projects/
 
 ##  Work directory
 
-This is working directory where sparky might place some stuff, useless at the moment
+This is working directory where sparky might place some stuff, useless at the moment:
 
-  /home/$USER/.sparky/work
+    /home/$USER/.sparky/work
 
 ##  Reports directory
 
-This is working directory where sparky place reports
+This is working directory where sparky place reports:
 
-  /home/$USER/.sparky/reports
+    /home/$USER/.sparky/reports
 
 
 # Sparrowdo runtime parameters
 
-These parameters can't be overridden
+These parameters can't be overridden and should be treated as internal Sparrowdo stuff.
+
+I list them here for documentation purposes only.
 
 ## SparrowRoot
 
