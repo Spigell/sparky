@@ -73,6 +73,10 @@ sub MAIN (
     $sparrowdo-run ~= " --no_sudo";
   }
 
+  if %config<no_index_update> {
+    $sparrowdo-run ~= " --no_index_update";
+  }
+
 
   if %config<ssh_user> {
     $sparrowdo-run ~= " --ssh_user=" ~ %config<ssh_user>;

@@ -17,19 +17,19 @@ but if you're impatient I'll brief you.
     $ git clone https://github.com/melezhik/sparky.git
     $ cd sparky && zef install .
     $ sudo apt-get install sqlite3
-    $ perl6 db-init.pl6 --root /var/data/sparky 
+    $ perl6 db-init.pl6 --root=/home/$USER/.sparky/projects 
 
 ## Run daemon
 
 You need to run the sparky daemon first pointing it a root directory with projects  
 
-    $ sparkyd --root /var/data/sparky
+    $ sparkyd --root=/home/$USER/.sparky/projects
 
 Sparky daemon will be building the projects found in the root directory every 5 minutes.
 
 You can change the timeout by applying `--timeout` parameter:
 
-    $ sparkyd --root /var/data/sparky --timeout=600 # every 10 minutes
+    $ sparkyd --root=/home/$USER/.sparky/projects --timeout=600 # every 10 minutes
 
 Running in daemonized mode.
 
@@ -41,14 +41,14 @@ At the moment sparky can't daemonize itself, as temporary workaround use linux `
 
 It should be just a directory located at the sparky root:
 
-    $ mkdir /var/data/sparky/bailador-app
+    $ mkdir /home/$USER/.sparky/projects/bailador-app
 
 ## Define build scenario
 
 It should sparrowdo scenario, for example we want to check out a source code from Git,
 install dependencies and then run unit tests. Say it's going to be a Bailador project:
 
-    $ nano /var/data/sparky/bailador-app/sparrowfile
+    $ nano /home/$USER/.sparky/projects/bailador-app/sparrowfile
 
     package-install 'git';
     
@@ -75,12 +75,13 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
 By default the build scenario gets executed _on the same machine you run sparky at_, but you can change this
 to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
 
-    $ nano /var/data/sparky/bailador-app/sparky.yaml
+    $ nano /home/$USER/.sparky/projects/bailador-app/sparky.yaml
 
     sparrowdo:
       - host: '192.168.0.1'
       - ssh_private_key: /path/to/ssh_private/key.pem
       - ssh_user: sparky
+      - no_index_update: true
 
 You read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in sparrowdo documentation.
 
@@ -89,7 +90,7 @@ You read about the all [available parameters](https://github.com/melezhik/sparro
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
 for example to run a build every hour at 30,50 or 55 minute say this:
 
-    $ nano /var/data/sparky/bailador-app/sparky.yaml
+    $ nano /home/$USER/.sparky/projects/bailador-app/sparky.yaml
 
     crontab: "30,50,55 * * * *"
 
@@ -166,7 +167,46 @@ Field state has one of tther possible values:
 
 You build run a certain project using sparky command client called `sparky-runner.pl6`
 
-    $ sparky-runner.pl6 --dir=/home/melezhik/.sparky/projects/bailador-app/  --stdout
+    $ sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app/  --stdout
+
+# Sparky runtime parameters
+
+All this parameters could be overridden by command line ( `--root`, `--work-root`, `--reprots-root` )
+
+##  Rood directory
+
+This is directory where sparky looks for projects
+
+  /home/$USER/.sparky/projects/
+
+##  Work directory
+
+This is working directory where sparky might place some stuff, useless at the moment
+
+  /home/$USER/.sparky/work
+
+##  Reports directory
+
+This is working directory where sparky place reports
+
+  /home/$USER/.sparky/reports
+
+
+# Sparrowdo runtime parameters
+
+These parameters can't be overridden
+
+## SparrowRoot
+
+  `/opt/sparky-sparrowdo/$project`
+
+## SparrowCwd
+
+  `/var/data/sparky/$project`
+
+# See also
+
+[Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
 
 # Author
 
