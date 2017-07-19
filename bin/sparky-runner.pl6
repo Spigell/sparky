@@ -13,7 +13,7 @@ sub MAIN (
 
   sleep($timeout) unless $stdout;
 
-  if "$dir/sparky.yaml".IO ~~ :f {
+  if "$dir/sparky.yaml".IO ~~ :f and ! $stdout  {
     my %config = load-yaml(slurp "$dir/sparky.yaml");
     if %config<crontab> {
       my $crontab = %config<crontab>;
