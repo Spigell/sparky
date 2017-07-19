@@ -7,7 +7,7 @@ sub MAIN (
   Str  :$project = $dir.IO.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
   Bool :$stdout = False,
-
+  Int  :$timeout = 10,
 )
 {
 
@@ -127,5 +127,6 @@ sub MAIN (
 
   }
 
+  sleep($timeout) unless $stdout;
 }
 

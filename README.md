@@ -25,11 +25,15 @@ You need to run the sparky daemon first pointing it a root directory with projec
 
     $ sparkyd --root=/home/$USER/.sparky/projects
 
-Sparky daemon will be building the projects found in the root directory every 5 minutes.
+Sparky daemon will be building the projects found in the root directory.
+
+Once a project gets built sparky worker (`sparky-runner.pl6`) sleeps for $timeout seconds. 
+
+This eleminates surplus sparky workers runs.
 
 You can change the timeout by applying `--timeout` parameter:
 
-    $ sparkyd --root=/home/$USER/.sparky/projects --timeout=600 # every 10 minutes
+    $ sparkyd --root=/home/$USER/.sparky/projects --timeout=600 # sleep 10 minutes
 
 Running in daemonized mode.
 

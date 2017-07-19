@@ -2,7 +2,7 @@ sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
-  Int  :$timeout = 300,
+  Int  :$timeout = 10,
 )
 
 {
