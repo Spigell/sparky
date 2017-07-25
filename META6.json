@@ -1,11 +1,14 @@
 {
   "perl"        : "6.*",
   "name"        : "Sparky",
-  "version"     : "0.0.1",
+  "version"     : "0.0.3",
   "description" : "Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem",
   "authors" : [ "Alexey Melezhik"],
   "depends"     : [
-                    "YAMLish"
+                    "YAMLish",
+                    "DBIish",
+                    "Sparrowdo",
+                    "Time::Crontab"
                   ],
   "source-type" : "git",
   "support" : {

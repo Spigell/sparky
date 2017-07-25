@@ -2,8 +2,11 @@ sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
+  Int  :$timeout = %*ENV<SPARKY_TIMEOUT> || 10,
 )
+
 {
+
 
   react {
 
@@ -11,16 +14,14 @@ sub MAIN (
     mkdir $work-root;
 
     sub run-project($dir, $project) {
-
       mkdir "$work-root/$project";
-
       whenever Proc::Async.new(
         'sparky-runner.pl6', 
         "--dir=$dir", 
         "--project=$project",
-        "--reports-root=$reports-root"
+        "--reports-root=$reports-root",
+        "--timeout=$timeout"
       ).start {
-        sleep(60);
         run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
       }
     }
