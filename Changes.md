@@ -1,3 +1,9 @@
+# 0.0.4
+
+2017-07-25
+
+* Small improvements for sparky-runner default settings
+
 # 0.0.3
 
 2017-07-25
