@@ -60,16 +60,7 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
 
     package-install 'git';
 
-    bash q:to/HERE/;
-
-      set -e;
-      if test -d .git; then
-        git pull
-      else
-        git clone https://github.com/Bailador/Bailador.git . 
-      fi
-
-    HERE
+    git-scm 'https://github.com/Bailador/Bailador.git';
 
     zef 'Path::Iterator';
     zef '.', %( depsonly => True );
