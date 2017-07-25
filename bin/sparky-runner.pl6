@@ -3,7 +3,6 @@ use DBIish;
 use Time::Crontab;
 
 sub MAIN (
-<<<<<<< HEAD
   Str  :$dir = $*CWD,
   Str  :$project = $dir.IO.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
