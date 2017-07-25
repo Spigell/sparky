@@ -1,8 +1,8 @@
 use YAMLish;
 
 sub MAIN (
-  Str  :$dir,
-  Str  :$project,
+  Str  :$dir = $*CWD,
+  Str  :$project = $*CWD.basename,
   Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
 )
 {
