@@ -170,11 +170,12 @@ Field state has one of tther possible values:
 
 You build run a certain project using sparky command client called `sparky-runner.pl6`
 
-    $ sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app/  --stdout
+    $ sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app  --stdout
 
-You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CRON` environment variable
+Or just:
 
-    $ SPARKY_SKIP_CRON=1 sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app/  --stdout
+    $ cd /home/$USER/.sparky/projects/bailador-app && sparky-runner.pl6 --stdout
+
 
 # Sparky runtime parameters
 
@@ -212,6 +213,15 @@ I list them here for documentation purposes only.
 ## SparrowCwd
 
   `/var/data/sparky/$project`
+
+
+# Environment variables
+
+## SPARKY_SKIP_CRON
+
+You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CRON` environment variable:
+
+    $ export SPARKY_SKIP_CRON=1 && sparkyd
 
 # See also
 
