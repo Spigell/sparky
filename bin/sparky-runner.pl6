@@ -130,11 +130,10 @@ sub MAIN (
 
   # remove old builds
 
-  say "keep builds: " ~ %config<keep_builds>;
-
   if %config<keep_builds> {
 
     say "keep builds: " ~ %config<keep_builds>;
+
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT ID from builds where project = ? order by id asc
     STATEMENT
