@@ -14,9 +14,10 @@ sub MAIN (
   return if "$dir/sparrowfile".IO ~~ :f;
 
   sleep($timeout) unless ( $stdout or %*ENV<SPARKY_SKIP_CRON> );
+  my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
-    my %config = load-yaml(slurp "$dir/sparky.yaml");
+    %config = load-yaml(slurp "$dir/sparky.yaml");
     if %config<crontab> {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
@@ -39,6 +40,7 @@ sub MAIN (
     INSERT INTO builds (project, state)
     VALUES ( ?,?)
   STATEMENT
+
   $sth.execute($project, 0);
 
   $sth = $dbh.prepare(q:to/STATEMENT/);
@@ -54,8 +56,6 @@ sub MAIN (
   $sth.finish;
 
   say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
-
-  my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f {
     my %yaml-config = load-yaml(slurp "$dir/sparky.yaml");
@@ -131,6 +131,47 @@ sub MAIN (
 
   }
 
+  # remove old builds
+
+  if %config<keep_builds> {
+
+    $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT ID from builds where project = ? order by id asc
+    STATEMENT
+    
+    $sth.execute($project);
+    
+    @rows = $sth.allrows();
+  
+    my $all-builds = @rows.elems;
+
+    $sth.finish;
+
+    my $remove-builds = $all-builds - %config<keep_builds>;
+
+    if $remove-builds > 0 {
+      my $i=0;
+      for @rows -> @r {
+        $i++;
+        my $bid = @r[0];
+        if $i <= $remove-builds {
+          if $dbh.do("delete from builds WHERE ID = $bid") {
+            say "remove build $project" ~ '@:' ~ $bid;
+          } else {
+            say "!!! can't remove build $project" ~ '@:' ~ $bid;
+          }
+          if unlink "$reports-root/$project/build-$bid.txt".IO {
+            say "remove $reports-root/$project/build-$bid.txt";
+          } else {
+            say "!!! can't remove $reports-root/$project/build-$bid.txt";
+          }
+        }
+
+      }
+
+    }
+
+  } 
 
 }
 

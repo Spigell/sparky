@@ -14,6 +14,7 @@ sub MAIN (
     mkdir $work-root;
 
     sub run-project($dir, $project) {
+      #say "proceed $dir ...";
       mkdir "$work-root/$project";
       whenever Proc::Async.new(
         'sparky-runner.pl6', 
@@ -29,7 +30,9 @@ sub MAIN (
     sub add-dirs() {
       state %seen;
       for dir($root) -> $dir {
+        next if "$dir".IO ~~ :f;
         next if %seen{$dir}++;
+        next if $dir.basename eq '.git';
         run-project($dir, $dir.basename);
       }
     }

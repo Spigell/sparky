@@ -13,11 +13,11 @@ my $db-name = "$root/db.sqlite3";
 
 my $dbh = DBIish.connect("SQLite", database => $db-name );
 
-my $sth = $dbh.do(q:to/STATEMENT/);
+$dbh.do(q:to/STATEMENT/);
     DROP TABLE IF EXISTS builds
     STATEMENT
 
-$sth = $dbh.do(q:to/STATEMENT/);
+$dbh.do(q:to/STATEMENT/);
     CREATE TABLE builds (
         id          INTEGER PRIMARY KEY AUTOINCREMENT,
         project     varchar(4),
@@ -27,6 +27,9 @@ $sth = $dbh.do(q:to/STATEMENT/);
     STATEMENT
 
 say "db populated at $db-name";
+
+
+$dbh.dispose;
 
 }
 
