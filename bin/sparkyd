@@ -22,7 +22,7 @@ sub MAIN (
         "--reports-root=$reports-root",
         "--timeout=$timeout"
       ).start {
-        run-project($dir, $project) if "$dir/sparrowfile".IO ~~ :f;
+        run-project($dir, $project);
       }
     }
     
@@ -30,7 +30,6 @@ sub MAIN (
       state %seen;
       for dir($root) -> $dir {
         next if %seen{$dir}++;
-        next unless "$dir/sparrowfile".IO ~~ :f;
         run-project($dir, $dir.basename);
       }
     }

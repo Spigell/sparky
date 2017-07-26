@@ -11,6 +11,8 @@ sub MAIN (
 )
 {
 
+  return if "$dir/sparrowfile".IO ~~ :f;
+
   sleep($timeout) unless ( $stdout or %*ENV<SPARKY_SKIP_CRON> );
 
   if "$dir/sparky.yaml".IO ~~ :f and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
