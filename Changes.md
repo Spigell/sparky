@@ -1,3 +1,9 @@
+# 0.0.8
+
+2017-07-26
+
+* sparrowdo/sparky config mess bugfix 
+
 # 0.0.7
 
 2017-07-26

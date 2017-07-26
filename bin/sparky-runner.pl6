@@ -17,9 +17,9 @@ sub MAIN (
 
   my %config = Hash.new;
 
-  if "$dir/sparky.yaml".IO ~~ :f and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
+  if "$dir/sparky.yaml".IO ~~ :f {
     %config = load-yaml(slurp "$dir/sparky.yaml");
-    if %config<crontab> {
+    if %config<crontab> and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
       if $tc.match(DateTime.now, :truncate(True)) {
@@ -58,52 +58,48 @@ sub MAIN (
 
   say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
 
-  if "$dir/sparky.yaml".IO ~~ :f {
-    my %yaml-config = load-yaml(slurp "$dir/sparky.yaml");
-    %config = %yaml-config<sparrowdo> if %yaml-config<sparrowdo>;
-  }
-
-
   my $sparrowdo-run = "sparrowdo --sparrow_root=/opt/sparky-sparrowdo/$project";
 
   $sparrowdo-run ~= ' --no_color' unless $stdout;
 
-  if %config<host> {
-    $sparrowdo-run ~= " --host=" ~ %config<host>;
+  my %sparrowdo-config = %config<sparrowdo> || Hash.new;
+
+  if %sparrowdo-config<host> {
+    $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
   } else {
     $sparrowdo-run ~= " --local_mode";
   }
 
-  if %config<no_sudo> {
+  if %sparrowdo-config<no_sudo> {
     $sparrowdo-run ~= " --no_sudo";
   }
 
-  if %config<no_index_update> {
+  if %sparrowdo-config<no_index_update> {
     $sparrowdo-run ~= " --no_index_update";
   }
 
 
-  if %config<ssh_user> {
-    $sparrowdo-run ~= " --ssh_user=" ~ %config<ssh_user>;
+  if %sparrowdo-config<ssh_user> {
+    $sparrowdo-run ~= " --ssh_user=" ~ %sparrowdo-config<ssh_user>;
   }
 
   if  %config<ssh_private_key> {
     $sparrowdo-run ~= " --ssh_private_key=" ~ %config<ssh_private_key>;
   }
 
-  if %config<ssh_port> {
-    $sparrowdo-run ~= " --ssh_port=" ~ %config<ssh_port>;
+  if %sparrowdo-config<ssh_port> {
+    $sparrowdo-run ~= " --ssh_port=" ~ %sparrowdo-config<ssh_port>;
   }
 
-  if %config<http_proxy> {
-    $sparrowdo-run ~= " --http_proxy=" ~ %config<http_proxy>;
+  if %sparrowdo-config<http_proxy> {
+    $sparrowdo-run ~= " --http_proxy=" ~ %sparrowdo-config<http_proxy>;
   }
 
-  if %config<https_proxy> {
-    $sparrowdo-run ~= " --https_proxy=" ~ %config<https_proxy>;
+  if %sparrowdo-config<https_proxy> {
+    $sparrowdo-run ~= " --https_proxy=" ~ %sparrowdo-config<https_proxy>;
   }
 
-  if  %config<verbose> {
+  if  %sparrowdo-config<verbose> {
     $sparrowdo-run ~= " --verbose";
   }
 
@@ -134,8 +130,11 @@ sub MAIN (
 
   # remove old builds
 
+  say "keep builds: " ~ %config<keep_builds>;
+
   if %config<keep_builds> {
 
+    say "keep builds: " ~ %config<keep_builds>;
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT ID from builds where project = ? order by id asc
     STATEMENT
