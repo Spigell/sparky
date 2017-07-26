@@ -88,6 +88,14 @@ to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sp
 
 You read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in sparrowdo documentation.
 
+## Purging old builds
+
+To remove old build set `keep_builds` parameter in sparky.yaml:
+
+    keep_builds: 10
+
+That makes sparky remove old build and only keep last `keep_builds` builds.
+
 ## Run by cron
 
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.

@@ -11,9 +11,10 @@ sub MAIN (
 )
 {
 
-  return if "$dir/sparrowfile".IO ~~ :f;
+  return unless "$dir/sparrowfile".IO ~~ :f;
 
   sleep($timeout) unless ( $stdout or %*ENV<SPARKY_SKIP_CRON> );
+
   my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
@@ -156,9 +157,9 @@ sub MAIN (
         my $bid = @r[0];
         if $i <= $remove-builds {
           if $dbh.do("delete from builds WHERE ID = $bid") {
-            say "remove build $project" ~ '@:' ~ $bid;
+            say "remove build $project" ~ '@' ~ $bid;
           } else {
-            say "!!! can't remove build $project" ~ '@:' ~ $bid;
+            say "!!! can't remove build $project" ~ '@' ~ $bid;
           }
           if unlink "$reports-root/$project/build-$bid.txt".IO {
             say "remove $reports-root/$project/build-$bid.txt";

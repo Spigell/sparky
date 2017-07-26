@@ -1,3 +1,9 @@
+# 0.0.7
+
+2017-07-26
+
+* First working version with purging old builds
+
 # 0.0.4
 
 2017-07-25
