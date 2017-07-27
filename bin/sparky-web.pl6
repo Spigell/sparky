@@ -10,7 +10,7 @@ get '/' => sub {
   my $dbh = DBIish.connect("SQLite", database => "$root/db.sqlite3".IO.absolute );
 
   my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT * FROM builds order by dt desc limit 100
+      SELECT * FROM builds order by dt desc
   STATEMENT
 
   $sth.execute();
