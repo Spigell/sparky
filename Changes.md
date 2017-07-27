@@ -1,9 +1,14 @@
+# 0.0.11
+
+2017-07-27
+
+* Minor documentation improvements
+
 # 0.0.10
 
 2017-07-27
 
 * Rewrote documentation, hide some internal stuff.
-
 
 # 0.0.9
 
