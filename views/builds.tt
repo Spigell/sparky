@@ -1,0 +1,59 @@
+% my @rows = @_;
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<html>
+
+    <head>
+      <title>~SPARKY CI WEB~</title>
+    </head>
+
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="active"><a href="/">Recent Builds</a></li>
+      <li role="presentation"><a href="/about">About</a></li>
+    </ul>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Recent builds</div>
+      <table class="table">
+        <tr>
+          <td>Project</td>
+          <td>ID</td>
+          <td>State</td>
+          <td>Time</td>
+        </tr>
+        % for @rows -> %r {
+        <tr>
+          <td>
+          %= %r<project>
+          </td>
+          <td>
+          %= "<a href='/report/" ~ %r<project> ~ '/' ~ %r<id> ~ "'>"  ~ %r<id> ~ "</a>"
+          </td>
+          <td>
+          % if %r<state> == -1 {
+          <span class="label label-danger">failed</span>
+          % }
+          % if %r<state> ==  0 {
+          <span class="label label-info">running</span>
+          % }
+          % if %r<state> == 1 {
+          <span class="label label-success">succeed</span>
+          % }
+          </td>
+          <td>
+          %= %r<dt>
+          </td>
+        </tr>   
+        % }
+      </table>
+  </div>
+<html>
