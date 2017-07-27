@@ -63,6 +63,10 @@ For example:
 
     BAILADOR=host:0.0.0.0,port:5000 perl6 bin/sparky-web.pl6
 
+
+![web-ui](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui.png)
+
+
 # Creating first sparky project
 
 Sparky project is just a directory located at the sparky root directory:
