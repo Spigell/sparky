@@ -33,6 +33,14 @@ get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
   }
 }
 
+get '/project/(\S+)' => sub ($project) {
+  if "$root/$project/sparrowfile".IO ~~ :f {
+    template 'project.tt', $project, "$root/$project/sparrowfile";
+  } else {
+    status(404);
+  }
+}
+
 get '/about' => sub {
 
   my $raw-md = slurp "README.md";

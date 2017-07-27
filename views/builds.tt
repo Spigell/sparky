@@ -33,7 +33,7 @@
         % for @rows -> %r {
         <tr>
           <td>
-          %= %r<project>
+          %= "<a href='/project/" ~ %r<project> ~ "'>"  ~ %r<project> ~ "</a>"
           </td>
           <td>
           %= "<a href='/report/" ~ %r<project> ~ '/' ~ %r<id> ~ "'>"  ~ %r<id> ~ "</a>"
