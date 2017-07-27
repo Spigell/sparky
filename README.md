@@ -9,7 +9,7 @@ Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 # Sparky workflow in 4 lines:
 
     $ sparkyd # run Sparky daemon to build your projects
-    $ perl6 bin/bin/sparky-web.pl6 # Run Sparky web ui to see build statuses and reports 
+    $ perl6 bin/sparky-web.pl6 # Run Sparky web ui to see build statuses and reports 
     $ nano ~/.sparky/projects/my-project/sparrowfile  # Write build scenario
     $ firefox 127.0.0.1:3000 # See what's happening 
 
