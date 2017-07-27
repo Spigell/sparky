@@ -15,9 +15,9 @@ Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 
 # Installation
 
+    $ sudo apt-get install sqlite3
     $ git clone https://github.com/melezhik/sparky.git
     $ cd sparky && zef install .
-    $ sudo apt-get install sqlite3
 
 # Setup
 
@@ -31,7 +31,7 @@ Then you need to run the sparky daemon
 
     $ sparkyd
 
-* Sparky daemon builds the projects found in the project root directory which is `~/.sparky/projects`.
+* Sparky daemon builds the projects found in the sparky root directory which is `~/.sparky/projects` by default.
 
 * Once a project gets built sparky worker (`sparky-runner.pl6`) sleeps for $timeout seconds.
 
@@ -51,11 +51,11 @@ At the moment sparky can't daemonize itself, as temporary workaround use linux `
 
 # Running web ui
 
-And finally sparky has simple web ui to show builds statues and reports.
+And finally sparky has simple web ui to show builds statuses and reports.
 
-To run web ui launch sparky-web.pl6 script from the `bin/` directory:
+To run Sparky web ui launch `sparky-web.pl6` script from the `bin/` directory:
 
-  $ perl6 bin/sparky-web.pl6
+    $ perl6 bin/sparky-web.pl6
 
 This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
 
@@ -72,9 +72,11 @@ Sparky project is just a directory located at the sparky root directory:
 # Writting build scenario
 
 Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) 
-_to know how to write Sparky scenarios_. Here is a short example.
+_to know how to write Sparky scenarios_. 
 
-Say we want to check out a Baildor source code from Git, install dependencies and then run unit tests:
+Here is a short example.
+
+Say, we want to check out the Baildor source code from Git, install dependencies and then run unit tests:
 
     $ nano ~/.sparky/projects/bailador-app/sparrowfile
 
@@ -93,9 +95,9 @@ Say we want to check out a Baildor source code from Git, install dependencies an
       )
     );
     
-# Set up executor
+# Configure Sparky workers
 
-By default the build scenario gets executed _on the same machine you run sparky at_, but you can change this
+By default the build scenario gets executed _on the same machine you run Sparky at_, but you can change this
 to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` file:
 
     $ nano ~/.sparky/projects/bailador-app/sparky.yaml
@@ -116,7 +118,7 @@ To remove old build set `keep_builds` parameter in `sparky.yaml`:
 
     keep_builds: 10
 
-That makes sparky remove old build and only keep last `keep_builds` builds.
+That makes Sparky remove old build and only keep last `keep_builds` builds.
 
 # Run by cron
 
@@ -146,7 +148,7 @@ All this parameters could be overridden by command line ( `--root`, `--work-root
 
 ##  Rood directory
 
-This is sparky root directory, or directory where sparky looks for the projects to get built:
+This is sparky root directory, or directory where Sparky looks for the projects to get built:
 
     ~/.sparky/projects/
 
