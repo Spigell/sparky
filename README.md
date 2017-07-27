@@ -72,7 +72,7 @@ Sparky project is just a directory located at the sparky root directory:
 # Defining build scenario
 
 Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) 
-_to know how to write Sparky scenarios_. Here is short example.
+_to know how to write Sparky scenarios_. Here is a short example.
 
 Say we want to check out a Baildor source code from Git, install dependencies and then run unit tests:
 
