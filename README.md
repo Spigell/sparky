@@ -6,34 +6,38 @@ Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem.
 
 [![Build Status](https://travis-ci.org/melezhik/sparky.svg)](https://travis-ci.org/melezhik/sparky)
 
+# Sparky workflow in 4 lines:
 
-# Description
+    $ sparkyd
+    $ perl6 bin/bin/sparky-web.pl6
+    $ nano ~/.sparky/projects/my-project/sparrowfile 
+    $ firefox 127.0.0.1:3000
 
-Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) first,
-but if you're impatient I'll brief you.
-
-## Installation
+# Installation
 
     $ git clone https://github.com/melezhik/sparky.git
     $ cd sparky && zef install .
     $ sudo apt-get install sqlite3
-    $ perl6 db-init.pl6 --root=/home/$USER/.sparky/projects 
 
-## Run daemon
+# Setup
 
-You need to run the sparky daemon first pointing it a root directory with projects  
+First you should run database initialization script to populate database schema:
 
-    $ sparkyd --root=/home/$USER/.sparky/projects
+    $ perl6 db-init.pl6
 
-Sparky daemon will be building the projects found in the root directory.
+# Running daemon
 
-Once a project gets built sparky worker (`sparky-runner.pl6`) sleeps for $timeout seconds. 
+Then you need to run the sparky daemon  
 
-This eleminates surplus sparky workers runs.
+    $ sparkyd
+
+* Sparky daemon builds the projects found in the project root directory which is `~/.sparky/projects`.
+
+* Once a project gets built sparky worker (`sparky-runner.pl6`) sleeps for $timeout seconds.
 
 You can change the timeout by applying `--timeout` parameter:
 
-    $ sparkyd --root=/home/$USER/.sparky/projects --timeout=600 # sleep 10 minutes
+    $ sparkyd --timeout=600 # sleep 10 minutes
 
 You can set timeout as well by using `SPARKY_TIMEOUT` environment variable:
 
@@ -45,18 +49,34 @@ At the moment sparky can't daemonize itself, as temporary workaround use linux `
 
     $ nohup sparkyd &
 
-## Create a project
+# Running web ui
 
-It should be just a directory located at the sparky root:
+And finally sparky has simple web ui to show builds statues and reports.
 
-    $ mkdir /home/$USER/.sparky/projects/bailador-app
+To run web ui launch sparky-web.pl6 script from the `bin/` directory:
 
-## Define build scenario
+  $ perl6 bin/sparky-web.pl6
 
-It should sparrowdo scenario, for example we want to check out a source code from Git,
-install dependencies and then run unit tests. Say it's going to be a Bailador project:
+This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
 
-    $ nano /home/$USER/.sparky/projects/bailador-app/sparrowfile
+For example:
+
+    BAILADOR=host:0.0.0.0,port:5000 perl6 bin/sparky-web.pl6
+
+# Creating first sparky project
+
+Sparky project is just a directory located at the sparky root directory:
+
+    $ mkdir ~/.sparky/projects/bailador-app
+
+# Defining build scenario
+
+Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) 
+_to know how to write Sparky scenarios. Here is short example.
+
+Say we want to check out a Baildor source code from Git, install dependencies and then run unit tests:
+
+    $ nano ~/.sparky/projects/bailador-app/sparrowfile
 
     package-install 'git';
 
@@ -73,12 +93,12 @@ install dependencies and then run unit tests. Say it's going to be a Bailador pr
       )
     );
     
-## Set up executor
+# Set up executor
 
 By default the build scenario gets executed _on the same machine you run sparky at_, but you can change this
-to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sparrowdo to run build scenarios:
+to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` file:
 
-    $ nano /home/$USER/.sparky/projects/bailador-app/sparky.yaml
+    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
     sparrowdo:
       - host: '192.168.0.1'
@@ -86,104 +106,39 @@ to _any remote host_ providing sparrowdo related parameters, as sparky _uses_ sp
       - ssh_user: sparky
       - no_index_update: true
 
-You read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in sparrowdo documentation.
+You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in Sparrowdo documentation.
 
-## Purging old builds
+# Purging old builds
 
-To remove old build set `keep_builds` parameter in sparky.yaml:
+To remove old build set `keep_builds` parameter in `sparky.yaml`:
+
+    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
     keep_builds: 10
 
 That makes sparky remove old build and only keep last `keep_builds` builds.
 
-## Run by cron
+# Run by cron
 
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
 for example to run a build every hour at 30,50 or 55 minute say this:
 
-    $ nano /home/$USER/.sparky/projects/bailador-app/sparky.yaml
+    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
     crontab: "30,50,55 * * * *"
 
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
-## See the reports
-
-Right now reports are just static files and there is no dedicated API to view them.
-However this is how you can see them by using nginx:
-
-    $ sudo mkdir -p /var/www/html/sparky
-    $ sudo chmod a+x /var/www/html/sparky
-    $ sudo chmod a+w /var/www/html/sparky
-
-    $ nano /etc/nginx/sites-enabled/default
-
-    location /sparky {
-      charset UTF-8;
-      autoindex on;
-    }
-
-    $ sudo service nginx reload
-
-    $ sparkyd --root /var/data/sparky --reports-root=/var/www/html/sparky
-
-    $ firefox 127.0.0.1/sparky
-
-## SQLite API
-
-You may check builds statues and times in runtime via sqlite database created by sparky:
-
-    $ sqlite3 $sparky-root/db.sqlite3 
-
-    sqlite> .schema builds
-    CREATE TABLE builds (
-        id          INTEGER PRIMARY KEY AUTOINCREMENT,
-        project     varchar(4),
-        state       int,
-        dt datetime default current_timestamp
-    );
-    
-    sqlite> select * from builds;
-
-    26|test-project3|1|2017-06-30 11:21:05
-    27|bailador-app|0|2017-06-30 11:21:05
-    28|test-project|0|2017-06-30 11:21:05
-    29|update-sparrow|1|2017-06-30 11:21:05
-    30|test-project3|1|2017-06-30 11:22:58
-    31|bailador-app|0|2017-06-30 11:22:58
-    32|test-project|-1|2017-06-30 11:22:58
-    33|update-sparrow|1|2017-06-30 11:22:58
-    34|test-project3|0|2017-06-30 11:30:22
-    35|bailador-app|0|2017-06-30 11:30:22
-    36|test-project|0|2017-06-30 11:30:22
-    37|update-sparrow|0|2017-06-30 11:30:23
-    38|test-project3|0|2017-06-30 11:31:16
-    39|bailador-app|0|2017-06-30 11:31:16
-    40|test-project|0|2017-06-30 11:31:16
-    41|update-sparrow|0|2017-06-30 11:31:16
-    42|test-project3|1|2017-06-30 11:31:26
-    43|bailador-app|0|2017-06-30 11:31:27
-    44|test-project|-1|2017-06-30 11:31:27
-    45|update-sparrow|1|2017-06-30 11:31:27
-    
-
-Field state has one of tther possible values:
-
-* 0  - build is running
-* 1  - build succeeded
-* -1 - build failed
-
 # Command line client
 
-You build run a certain project using sparky command client called `sparky-runner.pl6`
+You can build the certain project using sparky command client called `sparky-runner.pl6`:
 
-    $ sparky-runner.pl6 --dir=/home/$USER/.sparky/projects/bailador-app  --stdout
+    $ sparky-runner.pl6 --dir=~/.sparky/projects/bailador-app  --stdout
 
 Or just:
 
-    $ cd /home/$USER/.sparky/projects/bailador-app && sparky-runner.pl6 --stdout
-
+    $ cd ~/.sparky/projects/bailador-app && sparky-runner.pl6 --stdout
 
 # Sparky runtime parameters
 
@@ -191,22 +146,21 @@ All this parameters could be overridden by command line ( `--root`, `--work-root
 
 ##  Rood directory
 
-This is directory where sparky looks for projects:
+This is sparky root directory, or directory where sparky looks for the projects to get built:
 
-    /home/$USER/.sparky/projects/
+    ~/.sparky/projects/
 
 ##  Work directory
 
 This is working directory where sparky might place some stuff, useless at the moment:
 
-    /home/$USER/.sparky/work
+    ~/.sparky/work
 
 ##  Reports directory
 
 This is working directory where sparky place reports:
 
-    /home/$USER/.sparky/reports
-
+    ~/.sparky/reports
 
 # Sparrowdo runtime parameters
 
@@ -222,7 +176,6 @@ I list them here for documentation purposes only.
 
   `/var/data/sparky/$project`
 
-
 # Environment variables
 
 ## SPARKY_SKIP_CRON
@@ -231,16 +184,22 @@ You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CR
 
     $ export SPARKY_SKIP_CRON=1 && sparkyd
 
+## SPARKY_ROOT
+
+Sets the sparky root directory 
+
+## SPARKY_TIMEOUT
+
+Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
+
+
 # See also
 
+[Bailador](https://github.com/Bailador/Bailador) - A light-weight route-based web application framework for Perl 6.
 [Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
 
 # Author
 
 Alexey Melezhik
 
-
-
-
-
-
+ 

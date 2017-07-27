@@ -12,6 +12,7 @@ before_install:
 
 
 install:
+    - zef install Bailador --force-test 
     - zef install .
 
 
