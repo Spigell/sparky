@@ -69,7 +69,7 @@ Sparky project is just a directory located at the sparky root directory:
 
     $ mkdir ~/.sparky/projects/bailador-app
 
-# Defining build scenario
+# Writting build scenario
 
 Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo) 
 _to know how to write Sparky scenarios_. Here is a short example.
