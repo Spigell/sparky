@@ -103,10 +103,10 @@ to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` f
     $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
     sparrowdo:
-      - host: '192.168.0.1'
-      - ssh_private_key: /path/to/ssh_private/key.pem
-      - ssh_user: sparky
-      - no_index_update: true
+       -host: '192.168.0.1'
+       -ssh_private_key: /path/to/ssh_private/key.pem
+       -ssh_user: sparky
+       -no_index_update: true
 
 You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in Sparrowdo documentation.
 
