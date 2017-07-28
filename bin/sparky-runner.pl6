@@ -34,30 +34,42 @@ sub MAIN (
 
   mkdir $dir;
 
-  mkdir $reports-dir if $make-report;
+  my $build_id;
 
-  my $dbh = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute );
+  my $dbh;
 
-  my $sth = $dbh.prepare(q:to/STATEMENT/);
-    INSERT INTO builds (project, state)
-    VALUES ( ?,?)
-  STATEMENT
+  if $make-report {
 
-  $sth.execute($project, 0);
+    mkdir $reports-dir;
+  
+    $dbh = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute );
+  
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+      INSERT INTO builds (project, state)
+      VALUES ( ?,?)
+    STATEMENT
+  
+    $sth.execute($project, 0);
+  
+    $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT max(ID) AS build_id
+        FROM builds
+        STATEMENT
+  
+    $sth.execute();
+  
+    my @rows = $sth.allrows();
+    $build_id = @rows[0][0];
+  
+    $sth.finish;
+  
+    say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
 
-  $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT max(ID) AS build_id
-      FROM builds
-      STATEMENT
+  } else {
 
-  $sth.execute();
+    say 'start sparrowdo for project: ' ~ $project;
 
-  my @rows = $sth.allrows();
-  my $build_id = @rows[0][0];
-
-  $sth.finish;
-
-  say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
+  }
 
   my $sparrowdo-run = "sparrowdo --sparrow_root=/opt/sparky-sparrowdo/$project";
 
@@ -113,35 +125,42 @@ sub MAIN (
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
-  $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
+  if $make-report {
+    $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
+    say "project: $project build: $build_id finished";
+  } else {
+    say "project: $project build finished";
+  }
 
-  say "project: $project build: $build_id finished";
 
   CATCH {
-
 
       # will definitely catch all the exception 
       default { 
         warn .say;
-        say "project: $project build: $build_id failed";
-        $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
+        if $make-report {
+          say "project: $project build: $build_id failed";
+          $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
+        } else {
+          say "project: $project build failed";
+        }
       }
 
   }
 
   # remove old builds
 
-  if %config<keep_builds> {
+  if %config<keep_builds> and $make-report {
 
     say "keep builds: " ~ %config<keep_builds>;
 
-    $sth = $dbh.prepare(q:to/STATEMENT/);
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT ID from builds where project = ? order by id asc
     STATEMENT
     
     $sth.execute($project);
     
-    @rows = $sth.allrows();
+    my @rows = $sth.allrows();
   
     my $all-builds = @rows.elems;
 

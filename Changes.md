@@ -1,3 +1,9 @@
+# 0.0.13
+
+2017-07-28
+
+* Improved sparky-runner.pl6 logic, when gets run standalone
+
 # 0.0.12
 
 2017-07-28
