@@ -148,7 +148,7 @@ Or just:
 
 # Sparky runtime parameters
 
-All this parameters could be overridden by command line ( `--root`, `--work-root`, `--reprots-root` )
+All this parameters could be overridden by command line ( `--root`, `--work-root` )
 
 ##  Rood directory
 
