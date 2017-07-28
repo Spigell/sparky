@@ -29,9 +29,8 @@
       %= "$project@$build_id" 
       </div>
       <div class="panel-body">
-        <pre>
-          %= slurp $path
-        </pre>
+        % my $text = slurp $path
+        %= "<pre>" ~ $text ~ "</pre>"
       </div>
     </div>
     

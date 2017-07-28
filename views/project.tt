@@ -27,11 +27,10 @@
     <div class="panel panel-default">
       <div class="panel-heading">
       %= $project
-      </div>
+      </di
       <div class="panel-body">
-        <pre>
-          %= slurp $path
-        </pre>
+        % my $text = slurp $path
+        %= "<pre>" ~ $text ~ "</pre>"
       </div>
     </div>
     
