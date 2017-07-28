@@ -3,7 +3,7 @@ use DBIish;
 use Text::Markdown;
 
 my $root = %*ENV<SPARKY_ROOT> || '/home/' ~ %*ENV<USER> ~ '/.sparky/projects';
-my $reports-root = %*ENV<SPARKY_REPORTS_ROOT> || '/home/' ~ %*ENV<USER> ~ '/.sparky/reports';
+my $reports-dir = "$root/.reports";
 
 get '/' => sub {
 
@@ -26,8 +26,8 @@ get '/' => sub {
 }
 
 get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
-  if "$reports-root/$project/build-$build_id.txt".IO ~~ :f {
-    template 'report.tt', $project, $build_id, "$reports-root/$project/build-$build_id.txt";
+  if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
+    template 'report.tt', $project, $build_id, "$reports-dir/$project/build-$build_id.txt";
   } else {
     status(404);
   }

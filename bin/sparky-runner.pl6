@@ -4,12 +4,14 @@ use Time::Crontab;
 
 sub MAIN (
   Str  :$dir = "$*CWD",
-  Str  :$project = $dir.IO.basename,
-  Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
+  Bool :$make-report = False,
   Bool :$stdout = False,
   Int  :$timeout = 10,
 )
 {
+
+  my $project = $dir.IO.basename;
+  my $reports-dir = "$dir/../.reports/$project".IO.absolute;
 
   return unless "$dir/sparrowfile".IO ~~ :f;
 
@@ -33,7 +35,7 @@ sub MAIN (
 
   mkdir $dir;
 
-  mkdir "$reports-root/$project";
+  mkdir $reports-dir if $make-report;
 
   my $dbh = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute );
 
@@ -104,7 +106,7 @@ sub MAIN (
   }
 
   if ! $stdout {
-    my $report-file = "$reports-root/$project/build-$build_id.txt";
+    my $report-file = "$reports-dir/build-$build_id.txt";
     shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$report-file" ~ ' 2>&1');
     shell("echo >> $report-file && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$report-file" ~ ' 2>&1');
   } else{
@@ -159,10 +161,10 @@ sub MAIN (
           } else {
             say "!!! can't remove build $project" ~ '@' ~ $bid;
           }
-          if unlink "$reports-root/$project/build-$bid.txt".IO {
-            say "remove $reports-root/$project/build-$bid.txt";
+          if unlink "$reports-dir/build-$bid.txt".IO {
+            say "remove $reports-dir/build-$bid.txt";
           } else {
-            say "!!! can't remove $reports-root/$project/build-$bid.txt";
+            say "!!! can't remove $reports-dir/build-$bid.txt";
           }
         }
 

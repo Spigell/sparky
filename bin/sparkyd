@@ -1,7 +1,6 @@
 sub MAIN (
   Str  :$root = '/home/' ~ %*ENV<USER> ~ '/.sparky/projects', 
   Str  :$work-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/work', 
-  Str  :$reports-root = '/home/' ~ %*ENV<USER> ~ '/.sparky/reports',
   Int  :$timeout = %*ENV<SPARKY_TIMEOUT> || 10,
 )
 
@@ -19,8 +18,7 @@ sub MAIN (
       whenever Proc::Async.new(
         'sparky-runner.pl6', 
         "--dir=$dir", 
-        "--project=$project",
-        "--reports-root=$reports-root",
+        "--make-report",
         "--timeout=$timeout"
       ).start {
         run-project($dir, $project);
@@ -33,6 +31,7 @@ sub MAIN (
         next if "$dir".IO ~~ :f;
         next if %seen{$dir}++;
         next if $dir.basename eq '.git';
+        next if $dir.basename eq '.reports';
         run-project($dir, $dir.basename);
       }
     }
