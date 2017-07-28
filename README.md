@@ -162,12 +162,6 @@ This is working directory where sparky might place some stuff, useless at the mo
 
     ~/.sparky/work
 
-##  Reports directory
-
-This is working directory where sparky place reports:
-
-    ~/.sparky/reports
-
 # Sparrowdo runtime parameters
 
 These parameters can't be overridden and should be treated as internal Sparrowdo stuff.
