@@ -5,7 +5,6 @@ use Time::Crontab;
 sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
-  Bool :$stdout = False,
   Int  :$timeout = 10,
 )
 {
@@ -15,13 +14,13 @@ sub MAIN (
 
   return unless "$dir/sparrowfile".IO ~~ :f;
 
-  sleep($timeout) unless ( $stdout or %*ENV<SPARKY_SKIP_CRON> );
+  sleep($timeout) unless ( ! $make-report or %*ENV<SPARKY_SKIP_CRON> );
 
   my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f {
     %config = load-yaml(slurp "$dir/sparky.yaml");
-    if %config<crontab> and ! $stdout and ! %*ENV<SPARKY_SKIP_CRON> {
+    if %config<crontab> and $make-report and ! %*ENV<SPARKY_SKIP_CRON> {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
       if $tc.match(DateTime.now, :truncate(True)) {
@@ -62,7 +61,7 @@ sub MAIN (
 
   my $sparrowdo-run = "sparrowdo --sparrow_root=/opt/sparky-sparrowdo/$project";
 
-  $sparrowdo-run ~= ' --no_color' unless $stdout;
+  $sparrowdo-run ~= ' --no_color' unless ! $make-report;
 
   my %sparrowdo-config = %config<sparrowdo> || Hash.new;
 
@@ -105,7 +104,7 @@ sub MAIN (
     $sparrowdo-run ~= " --verbose";
   }
 
-  if ! $stdout {
+  if $make-report {
     my $report-file = "$reports-dir/build-$build_id.txt";
     shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$report-file" ~ ' 2>&1');
     shell("echo >> $report-file && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$report-file" ~ ' 2>&1');

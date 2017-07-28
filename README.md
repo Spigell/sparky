@@ -140,11 +140,11 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 
 You can build the certain project using sparky command client called `sparky-runner.pl6`:
 
-    $ sparky-runner.pl6 --dir=~/.sparky/projects/bailador-app  --stdout
+    $ sparky-runner.pl6 --dir=~/.sparky/projects/bailador-app
 
 Or just:
 
-    $ cd ~/.sparky/projects/bailador-app && sparky-runner.pl6 --stdout
+    $ cd ~/.sparky/projects/bailador-app && sparky-runner.pl6
 
 # Sparky runtime parameters
 
