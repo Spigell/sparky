@@ -1,3 +1,9 @@
+# 0.0.12
+
+2017-07-28
+
+* Refactoring - `--report-root` and `--stdout` options are abolished
+
 # 0.0.11
 
 2017-07-27
