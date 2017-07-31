@@ -21,13 +21,13 @@ get '/' => sub {
 
   $dbh.dispose;
   
-  template 'builds.tt', @rows;   
+  template 'builds.tt', css(), @rows;   
 
 }
 
 get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
   if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
-    template 'report.tt', $project, $build_id, "$reports-dir/$project/build-$build_id.txt";
+    template 'report.tt', css(), $project, $build_id, "$reports-dir/$project/build-$build_id.txt";
   } else {
     status(404);
   }
@@ -35,7 +35,7 @@ get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
 
 get '/project/(\S+)' => sub ($project) {
   if "$root/$project/sparrowfile".IO ~~ :f {
-    template 'project.tt', $project, "$root/$project/sparrowfile";
+    template 'project.tt', css(), $project, "$root/$project/sparrowfile";
   } else {
     status(404);
   }
@@ -45,7 +45,25 @@ get '/about' => sub {
 
   my $raw-md = slurp "README.md";
   my $md = parse-markdown($raw-md);
-  template 'about.tt', $md.to_html;
+  template 'about.tt', css(), $md.to_html;
+}
+
+static-dir / (.*) / => '/public';
+
+sub css {
+
+  q:to /CSS/;
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="/css/bootstrap-theme.min.css" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+  CSS
 }
 
 baile;

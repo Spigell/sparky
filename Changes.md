@@ -1,3 +1,9 @@
+# 0.0.14
+
+2017-07-31
+
+* Improved web ui ( adjusted twitter bootstrap theme )
+
 # 0.0.13
 
 2017-07-28
