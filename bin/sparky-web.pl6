@@ -1,6 +1,7 @@
 use Bailador;
 use DBIish;
 use Text::Markdown;
+use YAMLish;
 
 my $root = %*ENV<SPARKY_ROOT> || '/home/' ~ %*ENV<USER> ~ '/.sparky/projects';
 my $reports-dir = "$root/.reports";
@@ -35,7 +36,18 @@ get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
 
 get '/project/(\S+)' => sub ($project) {
   if "$root/$project/sparrowfile".IO ~~ :f {
-    template 'project.tt', css(), $project, "$root/$project/sparrowfile";
+    my $project-conf;
+    my $err;
+      if "$root/$project/sparky.yaml".IO ~~ :f {
+      $project-conf = slurp "$root/$project/sparky.yaml"; 
+      load-yaml($project-conf);
+      CATCH {
+        default {
+          $err = .Str;
+        }
+      }
+    }
+    template 'project.tt', css(), $project, $project-conf, "$root/$project/sparrowfile", $err;
   } else {
     status(404);
   }

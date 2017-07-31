@@ -1,4 +1,4 @@
-% my ( $css, $project, $path ) = @_;
+% my ( $css, $project, $project-conf, $path, $err ) = @_;
 
 %= $css
 
@@ -21,8 +21,9 @@
        </h3>
       </div>
       <div class="panel-body">
-        % my $text = slurp $path
-        %= "<pre>" ~ $text ~ "</pre>"
+        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf ) ~ "</pre>"
+        % my $text = slurp $path;
+        %= "<pre><strong>Scenario</strong>:\n\n" ~ $text ~ "</pre>"
       </div>
     </div>
     <!-- </div>  -->
