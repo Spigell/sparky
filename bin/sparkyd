@@ -29,9 +29,10 @@ sub MAIN (
       state %seen;
       for dir($root) -> $dir {
         next if "$dir".IO ~~ :f;
-        next if %seen{$dir}++;
+        next if %seen{$dir};
         next if $dir.basename eq '.git';
         next if $dir.basename eq '.reports';
+        %seen{$dir} = True;
         run-project($dir, $dir.basename);
       }
     }
