@@ -1,3 +1,8 @@
+# 0.0.15
+
+Change the logic of runners spawner, trying to deal with memory leaks 
+
+
 # 0.0.14
 
 2017-07-31

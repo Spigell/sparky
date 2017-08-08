@@ -2,12 +2,20 @@ use YAMLish;
 use DBIish;
 use Time::Crontab;
 
+state $DIR;
+state $MAKE-REPORT;
+state $TIMEOUT;
+
 sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
   Int  :$timeout = 10,
 )
 {
+
+  $DIR = $dir;
+  $MAKE-REPORT = $make-report;
+  $TIMEOUT = $timeout;
 
   my $project = $dir.IO.basename;
   my $reports-dir = "$dir/../.reports/$project".IO.absolute;
@@ -148,6 +156,7 @@ sub MAIN (
 
   }
 
+
   # remove old builds
 
   if %config<keep_builds> and $make-report {
@@ -192,5 +201,20 @@ sub MAIN (
 
   } 
 
+
 }
 
+LEAVE {
+  if $MAKE-REPORT {
+
+    say "re-run build for $DIR ... \n";
+    shell(
+      'sparky-runner.pl6' ~ 
+      " --dir=$DIR" ~
+      " --make-report" ~ 
+      " --timeout=$TIMEOUT" ~
+      ' &'
+    ); 
+  
+  }
+}

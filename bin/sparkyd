@@ -6,41 +6,33 @@ sub MAIN (
 
 {
 
+  state %seen;
 
-  react {
+  while True {
 
-    mkdir $root;
-    mkdir $work-root;
+    for dir($root) -> $dir {
 
-    sub run-project($dir, $project) {
+      next if "$dir".IO ~~ :f;
+      next if %seen{$dir};
+      next if $dir.basename eq '.git';
+      next if $dir.basename eq '.reports';
+  
+      mkdir $root;
+      mkdir $work-root;
+      my $project = $dir.basename;
       #say "proceed $dir ...";
       mkdir "$work-root/$project";
-      whenever Proc::Async.new(
+      Proc::Async.new(
         'sparky-runner.pl6', 
         "--dir=$dir", 
         "--make-report",
         "--timeout=$timeout"
-      ).start {
-        run-project($dir, $project);
-      }
-    }
-    
-    sub add-dirs() {
-      state %seen;
-      for dir($root) -> $dir {
-        next if "$dir".IO ~~ :f;
-        next if %seen{$dir};
-        next if $dir.basename eq '.git';
-        next if $dir.basename eq '.reports';
-        %seen{$dir} = True;
-        run-project($dir, $dir.basename);
-      }
-    }
-    
-    whenever IO::Notification.watch-path($root) {
-      add-dirs();
-    }
+      ).start;
 
-    add-dirs();
+      %seen{$dir} = True;
+
+    }
+    
   }
+
 } 
