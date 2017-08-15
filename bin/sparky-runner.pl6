@@ -27,7 +27,14 @@ sub MAIN (
   my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f {
+
     %config = load-yaml(slurp "$dir/sparky.yaml");
+
+    if %config<disabled> and $make-report {
+      say "$project build is disabled ... ";
+      return;
+    }
+
     if %config<crontab> and $make-report and ! %*ENV<SPARKY_SKIP_CRON> {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
@@ -45,6 +52,8 @@ sub MAIN (
   my $build_id;
 
   my $dbh;
+
+
 
   if $make-report {
 

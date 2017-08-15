@@ -136,6 +136,17 @@ for example to run a build every hour at 30,50 or 55 minute say this:
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
+# Disable project
+
+You can disable project builds by setting `disable` option to true:
+
+    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+
+    disabled: true
+
+It's handy when you start a new project and don't want to add it into build pipeline.
+    
+
 # Command line client
 
 You can build the certain project using sparky command client called `sparky-runner.pl6`:
