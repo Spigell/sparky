@@ -1,7 +1,11 @@
+# 0.0.16
+
+* Downstream projects
+* Improved logging
+
 # 0.0.15
 
 Change the logic of runners spawner, trying to deal with memory leaks 
-
 
 # 0.0.14
 

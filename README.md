@@ -149,11 +149,17 @@ It's handy when you start a new project and don't want to add it into build pipe
 
 # Downstream projects
 
-You can run downstream projects by setting `downstream` field at upstream project `sparky.yaml` file:
+You can run downstream projects by setting `downstream` field at the upstream project `sparky.yaml` file:
 
-    $ nano ~/.sparky/projects/foo/sparky.yaml
+    $ nano ~/.sparky/projects/main/sparky.yaml
 
-    downstream: bar
+    downstream: downstream-project
+
+And the by setting `is_downstream` field to `true` at the downstream project `sparky.yaml` file:
+
+    $ nano ~/.sparky/projects/downstream-project/sparky.yaml
+
+    is_downstream: true
 
 # Run once
 
