@@ -96,11 +96,11 @@ sub MAIN (
   
     $sth.finish;
   
-    say "BUILD $project" ~ '@' ~ $build_id;
+    say "RUN BUILD $project" ~ '@' ~ $build_id;
 
   } else {
 
-    say "BUILD $project";
+    say "RUN BUILD <$project>";
 
   }
 
@@ -161,10 +161,9 @@ sub MAIN (
   if $make-report {
     $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id;
-
     $BUILD_STATE="OK";
   } else {
-    say "BUILD SUCCEED $project";
+    say "BUILD SUCCEED <$project>";
 
   }
 
@@ -180,7 +179,7 @@ sub MAIN (
           $BUILD_STATE="FAILED";
 
         } else {
-          say "BUILD FAILED $project";
+          say "BUILD FAILED <$project>";
           $BUILD_STATE="FAILED";
         }
       }
@@ -242,7 +241,7 @@ LEAVE {
   if  $PROJECT_RUN  {
 
     say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
-    say "Build SUMMARY";
+    say "BUILD SUMMARY";
     say "STATE: $BUILD_STATE";
     say "PROJECT: $project";
     say "FOREVER: $FOREVER";
@@ -266,11 +265,9 @@ LEAVE {
     # run downstream project
     if $FOREVER and %CONFIG<downstream> and ! %CONFIG<disabled> and $PROJECT_RUN  {
     
-      say "run build for DOWNSTREAM project <" ~ %CONFIG<downstream> ~ "> ... \n";
+      say "SCHEDULE BUILD for DOWNSTREAM project <" ~ %CONFIG<downstream> ~ "> ... \n";
 
       my $downstream_dir = ("$DIR/../" ~ %CONFIG<downstream>).IO.absolute;
-
-      say "downstream dir: $downstream_dir \n";
 
       shell(
         'sparky-runner.pl6' ~ 
@@ -283,7 +280,7 @@ LEAVE {
 
     if $FOREVER  {
     
-      say "RUN build for <$project> ... \n";
+      say "SCHEDULE BUILD for <$project> ... \n";
       shell(
         'sparky-runner.pl6' ~ 
         " --dir=$DIR" ~
