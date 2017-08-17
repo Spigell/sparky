@@ -3,49 +3,65 @@ use DBIish;
 use Time::Crontab;
 
 state $DIR;
-state $MAKE-REPORT;
 state $TIMEOUT;
+state $FOREVER;
+state $PROJECT_RUN = False;
+
+state %CONFIG;
+state $BUILD_STATE;
 
 sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
   Int  :$timeout = 10,
+  Bool :$forever = False,
 )
 {
 
   $DIR = $dir;
-  $MAKE-REPORT = $make-report;
   $TIMEOUT = $timeout;
+  $FOREVER  = $forever;
 
   my $project = $dir.IO.basename;
   my $reports-dir = "$dir/../.reports/$project".IO.absolute;
 
   return unless "$dir/sparrowfile".IO ~~ :f;
 
-  sleep($timeout) unless ( ! $make-report or %*ENV<SPARKY_SKIP_CRON> );
-
   my %config = Hash.new;
 
   if "$dir/sparky.yaml".IO ~~ :f {
 
     %config = load-yaml(slurp "$dir/sparky.yaml");
+    %CONFIG = %config;
 
-    if %config<disabled> and $make-report {
-      say "$project build is disabled ... ";
+    if %config<disabled> and $forever {
+      say "<$project> build is disabled, skip ... ";
       return;
     }
 
-    if %config<crontab> and $make-report and ! %*ENV<SPARKY_SKIP_CRON> {
+    if %config<is_downstream> and $forever {
+      say "<$project> build is downstream, skip when running in forever mode ... ";
+      return;
+    }
+
+    if %config<crontab> and $forever and ! %*ENV<SPARKY_SKIP_CRON> {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
       if $tc.match(DateTime.now, :truncate(True)) {
-        say "$project is passed by cron: $crontab ...";
+        say "<$project> time is passed by cron: $crontab ...";
       } else {
-        say "$project is skipped by cron: $crontab ... ";
+        say "<$project> time is skipped by cron: $crontab ... ";
         return;
       }
+    } elsif !%config<crontab>  and $forever  {
+        say "<$project> crontab entry not found, consider manual start or set up cron later, skip ... ";
+        return;
+        
     }
+
   }
+
+  $PROJECT_RUN = True;
 
   mkdir $dir;
 
@@ -80,11 +96,11 @@ sub MAIN (
   
     $sth.finish;
   
-    say 'start sparrowdo for project: ' ~ $project ~ ' build ID:' ~ $build_id;
+    say "BUILD $project" ~ '@' ~ $build_id;
 
   } else {
 
-    say 'start sparrowdo for project: ' ~ $project;
+    say "BUILD $project";
 
   }
 
@@ -144,9 +160,12 @@ sub MAIN (
 
   if $make-report {
     $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
-    say "project: $project build: $build_id finished";
+    say "BUILD SUCCEED $project" ~ '@' ~ $build_id;
+
+    $BUILD_STATE="OK";
   } else {
-    say "project: $project build finished";
+    say "BUILD SUCCEED $project";
+
   }
 
 
@@ -156,10 +175,13 @@ sub MAIN (
       default { 
         warn .say;
         if $make-report {
-          say "project: $project build: $build_id failed";
+          say "BUILD FAILED $project" ~ '@' ~ $build_id;
           $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
+          $BUILD_STATE="FAILED";
+
         } else {
-          say "project: $project build failed";
+          say "BUILD FAILED $project";
+          $BUILD_STATE="FAILED";
         }
       }
 
@@ -195,7 +217,7 @@ sub MAIN (
           if $dbh.do("delete from builds WHERE ID = $bid") {
             say "remove build $project" ~ '@' ~ $bid;
           } else {
-            say "!!! can't remove build $project" ~ '@' ~ $bid;
+            say "!!! can't remove build <$project>" ~ '@' ~ $bid;
           }
           if unlink "$reports-dir/build-$bid.txt".IO {
             say "remove $reports-dir/build-$bid.txt";
@@ -214,16 +236,65 @@ sub MAIN (
 }
 
 LEAVE {
-  if $MAKE-REPORT {
 
-    say "re-run build for $DIR ... \n";
-    shell(
-      'sparky-runner.pl6' ~ 
-      " --dir=$DIR" ~
-      " --make-report" ~ 
-      " --timeout=$TIMEOUT" ~
-      ' &'
-    ); 
-  
+  my $project = $DIR.IO.basename;
+
+  if  $PROJECT_RUN  {
+
+    say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
+    say "Build SUMMARY";
+    say "STATE: $BUILD_STATE";
+    say "PROJECT: $project";
+    say "FOREVER: $FOREVER";
+    say "CONFIG: " ~ %CONFIG;
+    say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
+
   }
+
+  if %CONFIG<run_once> and $PROJECT_RUN {
+
+    say "<$project> run once, bye! ... \n";
+
+  } else {
+
+
+    if $FOREVER and ! %*ENV<SPARKY_SKIP_CRON>  {
+      say "<$project> sleep for $TIMEOUT seconds ... \n";
+      sleep($TIMEOUT);
+    }
+    
+    # run downstream project
+    if $FOREVER and %CONFIG<downstream> and ! %CONFIG<disabled> and $PROJECT_RUN  {
+    
+      say "run build for DOWNSTREAM project <" ~ %CONFIG<downstream> ~ "> ... \n";
+
+      my $downstream_dir = ("$DIR/../" ~ %CONFIG<downstream>).IO.absolute;
+
+      say "downstream dir: $downstream_dir \n";
+
+      shell(
+        'sparky-runner.pl6' ~ 
+        " --dir=" ~ $downstream_dir ~
+        " --make-report" ~ 
+        " --timeout=$TIMEOUT" ~
+        ' &'
+      ); 
+    }
+
+    if $FOREVER  {
+    
+      say "RUN build for <$project> ... \n";
+      shell(
+        'sparky-runner.pl6' ~ 
+        " --dir=$DIR" ~
+        " --make-report" ~ 
+        " --timeout=$TIMEOUT" ~
+        " --forever" ~
+        ' &'
+      ); 
+  
+    }
+    
+  }
+
 }

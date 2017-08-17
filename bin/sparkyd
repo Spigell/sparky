@@ -16,7 +16,7 @@ sub MAIN (
       next if %seen{$dir};
       next if $dir.basename eq '.git';
       next if $dir.basename eq '.reports';
-  
+      next if $dir.basename eq 'db.sqlite3-journal';  
       mkdir $root;
       mkdir $work-root;
       my $project = $dir.basename;
@@ -26,7 +26,8 @@ sub MAIN (
         'sparky-runner.pl6', 
         "--dir=$dir", 
         "--make-report",
-        "--timeout=$timeout"
+        "--timeout=$timeout",
+        "--forever"
       ).start;
 
       %seen{$dir} = True;

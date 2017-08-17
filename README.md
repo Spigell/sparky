@@ -147,6 +147,20 @@ You can disable project builds by setting `disable` option to true:
 It's handy when you start a new project and don't want to add it into build pipeline.
     
 
+# Downstream projects
+
+You can run downstream projects by setting `downstream` field at upstream project `sparky.yaml` file:
+
+    $ nano ~/.sparky/projects/foo/sparky.yaml
+
+    downstream: bar
+
+# Run once
+
+To run a project only once set `run_once` field at the project `sparky.yaml` file:
+
+    run_once: true
+
 # Command line client
 
 You can build the certain project using sparky command client called `sparky-runner.pl6`:
