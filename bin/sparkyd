@@ -42,8 +42,6 @@ sub schedule-build ( $dir ) {
 
   my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.pl6 | grep '\\--marker=$project ' | grep -v grep");
 
-  say "run proc check: @proc-check-cmd";
-
   my $proc-run = run @proc-check-cmd, :out; 
 
   say "proc run exit code: " ~ $proc-run.exitcode;
@@ -53,35 +51,38 @@ sub schedule-build ( $dir ) {
       return;
   }
 
+  my %config = Hash.new;
+
   if "$dir/sparky.yaml".IO ~~ :f {
 
-    my %config = load-yaml(slurp "$dir/sparky.yaml");
-
-    if %config<disabled>  {
-      say "<$project> build is disabled, skip ... ";
-      return;
-    }
-
-    if %config<is_downstream> {
-      say "<$project> is downstream, skip when running directly ... ";
-      return;
-    }
-
-    if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> {
-      my $crontab = %config<crontab>;
-      my $tc = Time::Crontab.new(:$crontab);
-      if $tc.match(DateTime.now, :truncate(True)) {
-        say "<$project> time is passed by cron: $crontab ...";
-      } else {
-        say "<$project> time is skipped by cron: $crontab ... ";
-        return;
-      }
-    } elsif !%config<crontab>  {
-        say "<$project> crontab entry not found, consider manual start or set up cron later, skip ... ";
-        return;
-    }
+    %config = load-yaml(slurp "$dir/sparky.yaml");
 
   }
+
+  if %config<disabled>  {
+    say "<$project> build is disabled, skip ... ";
+    return;
+  }
+
+  if %config<is_downstream> {
+    say "<$project> is downstream, skip when running directly ... ";
+    return;
+  }
+
+  if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> {
+    my $crontab = %config<crontab>;
+    my $tc = Time::Crontab.new(:$crontab);
+    if $tc.match(DateTime.now, :truncate(True)) {
+      say "<$project> time is passed by cron: $crontab ...";
+    } else {
+      say "<$project> time is skipped by cron: $crontab ... ";
+      return;
+    }
+  } elsif !%config<crontab>  {
+      say "<$project> crontab entry not found, consider manual start or set up cron later, skip ... ";
+      return;
+  }
+
 
   Proc::Async.new(
     'sparky-runner.pl6',
