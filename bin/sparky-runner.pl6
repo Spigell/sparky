@@ -212,7 +212,7 @@ LEAVE {
   say "BUILD SUMMARY";
   say "STATE: $BUILD_STATE";
   say "PROJECT: $project";
-  say "CONFIG: " ~ Dump(%CONFIG);
+  say "CONFIG: " ~ Dump(%CONFIG, :color(False));
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
 
 
