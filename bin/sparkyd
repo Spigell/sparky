@@ -47,7 +47,12 @@ sub schedule-build ( $dir ) {
   say "proc run exit code: " ~ $proc-run.exitcode;
 
   if $proc-run.exitcode == 0 {
-      say "<$project> build already running: " ~ $proc-run.out.get ~ ", skip ... ";
+
+      $proc-run.out.get ~~ m/(\d+)/; 
+
+      my $pid = $0;
+
+      say "<$project> build already running, pid: $pid SKIP ... ";
       return;
   }
 
@@ -60,12 +65,12 @@ sub schedule-build ( $dir ) {
   }
 
   if %config<disabled>  {
-    say "<$project> build is disabled, skip ... ";
+    say "<$project> build is disabled, SKIP ... ";
     return;
   }
 
   if %config<is_downstream> {
-    say "<$project> is downstream, skip when running directly ... ";
+    say "<$project> is downstream, SKIP when running directly ... ";
     return;
   }
 
@@ -75,11 +80,11 @@ sub schedule-build ( $dir ) {
     if $tc.match(DateTime.now, :truncate(True)) {
       say "<$project> time is passed by cron: $crontab ...";
     } else {
-      say "<$project> time is skipped by cron: $crontab ... ";
+      say "<$project> time is SKIPPED by cron: $crontab ... ";
       return;
     }
   } elsif !%config<crontab>  {
-      say "<$project> crontab entry not found, consider manual start or set up cron later, skip ... ";
+      say "<$project> crontab entry not found, consider manual start or set up cron later, SKIP ... ";
       return;
   }
 
