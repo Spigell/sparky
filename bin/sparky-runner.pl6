@@ -1,6 +1,7 @@
 use YAMLish;
 use DBIish;
 use Time::Crontab;
+use Data::Dump;
 
 state $DIR;
 state $MAKE-REPORT;
@@ -211,7 +212,7 @@ LEAVE {
   say "BUILD SUMMARY";
   say "STATE: $BUILD_STATE";
   say "PROJECT: $project";
-  say "CONFIG: " ~ %CONFIG;
+  say "CONFIG: " ~ Dump(%CONFIG);
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
 
 

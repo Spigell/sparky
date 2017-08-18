@@ -1,3 +1,7 @@
+# 0.0.19
+
+* Use Data::Dump to dump config in a log
+
 # 0.0.18
 
 * Crontab entries check logic 

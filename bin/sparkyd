@@ -44,7 +44,7 @@ sub schedule-build ( $dir ) {
 
   my $proc-run = run @proc-check-cmd, :out; 
 
-  say "proc run exit code: " ~ $proc-run.exitcode;
+  say "proc check exit code: " ~ $proc-run.exitcode;
 
   if $proc-run.exitcode == 0 {
 

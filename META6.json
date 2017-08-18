@@ -10,7 +10,8 @@
                     "Sparrowdo",
                     "Time::Crontab",
                     "Bailador",
-                    "Text::Markdown"
+                    "Text::Markdown",
+                    "Data::Dump"
                   ],
   "source-type" : "git",
   "support" : {
