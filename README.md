@@ -31,7 +31,7 @@ Then you need to run the sparky daemon
 
     $ sparkyd
 
-* Sparky daemon traverse sub directories found at the project root directory.
+* Sparky daemon traverses sub directories found at the project root directory.
 
 * For every directory found initiate build process invoking sparky worker ( `sparky-runner.pl6` ).
 
@@ -39,13 +39,13 @@ Then you need to run the sparky daemon
 
 * Once all the sub directories gets passed, sparky daemon sleeps for $timeout seconds. 
 
-* Timeout option allow to adjust a load to your system. 
+* A timeout option allow to adjust a load to your system. 
 
-* You can change the timeout by applying `--timeout` parameter:
+* You can change a timeout by applying `--timeout` parameter when running sparky daemon:
 
     $ sparkyd --timeout=600 # sleep 10 minutes
 
-* You can set timeout as well by using `SPARKY_TIMEOUT` environment variable:
+* You can also set a timeout by using `SPARKY_TIMEOUT` environment variable:
 
     $ SPARKY_TIMEOUT=30 sparkyd ...
 
