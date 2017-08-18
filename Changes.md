@@ -1,3 +1,7 @@
+# 0.0.17
+
+* Refactoring, child processes logic improved 
+
 # 0.0.16
 
 * Downstream projects

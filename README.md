@@ -161,12 +161,6 @@ And the by setting `is_downstream` field to `true` at the downstream project `sp
 
     is_downstream: true
 
-# Run once
-
-To run a project only once set `run_once` field at the project `sparky.yaml` file:
-
-    run_once: true
-
 # Command line client
 
 You can build the certain project using sparky command client called `sparky-runner.pl6`:
