@@ -1,3 +1,7 @@
+# 0.0.18
+
+* Crontab entries check logic 
+
 # 0.0.17
 
 * Refactoring, child processes logic improved 
