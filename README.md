@@ -31,23 +31,31 @@ Then you need to run the sparky daemon
 
     $ sparkyd
 
-* Sparky daemon builds the projects found in the sparky root directory which is `~/.sparky/projects` by default.
+* Sparky daemon traverse sub directories found at the project root directory.
 
-* Once a project gets built sparky worker (`sparky-runner.pl6`) sleeps for $timeout seconds.
+* For every directory found initiate build process invoking sparky worker ( `sparky-runner.pl6` ).
 
-You can change the timeout by applying `--timeout` parameter:
+* Sparky root directory default location is `~/.sparky/projects`.
+
+* Once all the sub directories gets passed, sparky daemon sleeps for $timeout seconds. 
+
+* Timeout option allow to adjust a load to your system. 
+
+* You can change the timeout by applying `--timeout` parameter:
 
     $ sparkyd --timeout=600 # sleep 10 minutes
 
-You can set timeout as well by using `SPARKY_TIMEOUT` environment variable:
+* You can set timeout as well by using `SPARKY_TIMEOUT` environment variable:
 
     $ SPARKY_TIMEOUT=30 sparkyd ...
 
-Running in daemonized mode.
+Running sparky in daemonized mode.
 
 At the moment sparky can't daemonize itself, as temporary workaround use linux `nohup` command:
 
     $ nohup sparkyd &
+
+Or you can look at systemd scripts located at `./systemd` directory.
 
 # Running web ui
 
