@@ -1,3 +1,7 @@
+# 0.0.21
+
+* SQL bug fix ( for project column )
+
 # 0.0.20
 
 * Database engine now is configurable. Yes, you can use MySQL and PostgreSQL!

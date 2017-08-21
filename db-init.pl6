@@ -50,7 +50,7 @@ if $engine ~~ /:i sqlite/ {
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE builds (
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
-          project     varchar(4),
+          project     varchar(255),
           state       int,
           dt datetime default current_timestamp
       )
@@ -61,7 +61,7 @@ if $engine ~~ /:i sqlite/ {
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE builds (
           id          SERIAL,
-          project     varchar(4),
+          project     varchar(255),
           state       int,
           dt datetime default current_timestamp
       )

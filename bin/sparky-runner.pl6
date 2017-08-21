@@ -127,7 +127,7 @@ sub MAIN (
   }
 
   if $make-report {
-    $dbh.do("UPDATE builds SET state = 1 WHERE ID = $build_id");
+    $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id");
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id;
     $BUILD_STATE="OK";
   } else {
@@ -144,7 +144,7 @@ sub MAIN (
         warn .say;
         if $make-report {
           say "BUILD FAILED $project" ~ '@' ~ $build_id;
-          $dbh.do("UPDATE builds SET state = -1 WHERE ID = $build_id");
+          $dbh.do("UPDATE builds SET state = -1 WHERE id = $build_id");
           $BUILD_STATE="FAILED";
 
         } else {
@@ -163,7 +163,7 @@ sub MAIN (
     say "keep builds: " ~ %config<keep_builds>;
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-        SELECT ID from builds where project = ? order by id asc
+        SELECT id from builds where project = ? order by id asc
     STATEMENT
     
     $sth.execute($project);
@@ -182,7 +182,7 @@ sub MAIN (
         $i++;
         my $bid = @r[0];
         if $i <= $remove-builds {
-          if $dbh.do("delete from builds WHERE ID = $bid") {
+          if $dbh.do("delete from builds WHERE id = $bid") {
             say "remove build $project" ~ '@' ~ $bid;
           } else {
             say "!!! can't remove build <$project>" ~ '@' ~ $bid;
