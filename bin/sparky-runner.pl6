@@ -39,12 +39,11 @@ sub MAIN (
 
   my $dbh;
 
-
   if $make-report {
 
     mkdir $reports-dir;
   
-    $dbh = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute );
+    $dbh = get-dbh( $dir );
   
     my $sth = $dbh.prepare(q:to/STATEMENT/);
       INSERT INTO builds (project, state)
@@ -201,6 +200,33 @@ sub MAIN (
 
   } 
 
+
+}
+
+sub get-dbh ( $dir ) {
+
+  my $conf-file = %*ENV<USER> ?? '/home/' ~ %*ENV<USER> ~ '/sparky.yaml' !! ( '/sparky.yaml' );
+
+  my %conf = $conf-file.IO ~~ :e ?? load-yaml(slurp $conf-file) !! Hash.new;
+
+  my $dbh;
+
+  if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
+
+    $dbh  = DBIish.connect(
+        %conf<database><engine>,
+        host      => %conf<database><host>,
+        port      => %conf<database><port>,
+        database  => %conf<database><name>,
+        user      => %conf<database><user>,
+        password  => %conf<database><pass>,
+    );
+
+  } else {
+
+    $dbh  = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute  );
+
+  }
 
 }
 

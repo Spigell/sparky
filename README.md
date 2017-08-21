@@ -225,6 +225,51 @@ Sets the sparky root directory
 
 Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
 
+# Running under other databases engines (MySQL, PostgreSQL)
+
+By default Sparky uses sqlite as database engine, which makes it easy to use when developing. 
+However sqlite has limitation on transactions locking whole database when doing inserts/updates (Database Is Locked errors).
+
+if you prefer other databases here is guideline.
+
+## Create sparky configuration file
+
+You should defined database engine and connection parameters, say we want to use MySQL:
+  
+    $ nano ~/sparky.yaml
+
+    database:
+      - engine: MySQL 
+      - host: $dbhost
+      - port: $dbport
+      - name: $dbname
+      - user: $dbuser
+      - pass: $dbpassword
+
+For example:
+
+    database:
+      engine: mysql
+      host: "127.0.0.1"
+      port: 3306
+      name: sparky
+      user: sparky
+      pass: "123"
+
+## Installs dependencies
+
+Depending on platform it should be client needed for your database API, for example for Debian we have to:
+
+    $ sudo yum install mysql-client
+
+## Creating database user, password and schema
+
+DB init script will generate database schema, provided that user defined and sparky configuration file has access to
+the database:
+
+    $ perl6 db-init.pl6
+
+That is it, now sparky runs under MySQL!
 
 # See also
 

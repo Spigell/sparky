@@ -1,3 +1,7 @@
+# 0.0.20
+
+* Database engine now is configurable. Yes, you can use MySQL and PostgreSQL!
+
 # 0.0.19
 
 * Use Data::Dump to dump config in a log
