@@ -2,6 +2,8 @@
 
 * Sparky distributuin moved to CPAN
 * sparky.yaml - respect for `docker` parameter
+* docker exec do not allocate pseudo tty
+* format error fix
 
 # 0.0.21
 
