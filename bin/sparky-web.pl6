@@ -6,6 +6,7 @@ use YAMLish;
 my $root = %*ENV<SPARKY_ROOT> || '/home/' ~ %*ENV<USER> ~ '/.sparky/projects';
 my $reports-dir = "$root/.reports";
 
+#say $root;
 
 get '/' => sub {
 
@@ -27,7 +28,9 @@ get '/' => sub {
 
 }
 
-get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
+
+get '/report/:project/:build_id' => sub ( $project, $build_id ) {
+  "$reports-dir/$project/build-$build_id.txt";
   if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
     template 'report.tt', css(), $project, $build_id, "$reports-dir/$project/build-$build_id.txt";
   } else {
@@ -35,7 +38,7 @@ get '/report/(\S+)/(\d+)' => sub ($project, $build_id) {
   }
 }
 
-get '/project/(\S+)' => sub ($project) {
+get '/project/:project' => sub ($project) {
   if "$root/$project/sparrowfile".IO ~~ :f {
     my $project-conf;
     my $err;
