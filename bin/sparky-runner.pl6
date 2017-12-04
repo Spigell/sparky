@@ -78,7 +78,9 @@ sub MAIN (
 
   my %sparrowdo-config = %config<sparrowdo> || Hash.new;
 
-  if %sparrowdo-config<host> {
+  if %sparrowdo-config<docker> {
+    $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
+  } elsif %sparrowdo-config<host> {
     $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
   } else {
     $sparrowdo-run ~= " --local_mode";

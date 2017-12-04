@@ -1,3 +1,8 @@
+# 0.0.22
+
+* Sparky distributuin moved to CPAN
+* sparky.yaml - respect for `docker` parameter
+
 # 0.0.21
 
 * SQL bug fix ( for project column )

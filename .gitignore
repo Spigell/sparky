@@ -1,4 +1,4 @@
-lib/
-nohup.out
-settings.yaml
-
+lib/.precomp/
+.precomp
+*.tar.gz
+Sparky-*
