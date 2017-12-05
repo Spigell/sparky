@@ -173,7 +173,7 @@ And the by setting `is_downstream` field to `true` at the downstream project `sp
 
 Sparky plugins are extensions points to add extra functionality to Sparky builds.
 
-These are Perl6 modules get run _after_ a Sparky project finishes or in other words when a build completes.
+These are Perl6 modules get run _after_ a Sparky project finishes or in other words when a build is completed.
 
 To use Sparky plugins you should:
 
@@ -198,7 +198,7 @@ For instance:
     plugins:
       - "Sparky::Plugin::Email" :
         - parameters:
-          - message: "I finish"
+          - message: "I finished"
           - to: "happy@user.email"
 
 ## Creating Sparky plugins
