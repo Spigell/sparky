@@ -133,6 +133,13 @@ sub MAIN (
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
+  # apply Sparky plugins
+  if  %sparrowdo-config<plugins> {
+    for %sparrowdo-config<plugins> -> $p {
+      say "Running Spark plugin $p ... ";
+    }
+  }
+
   if $make-report {
     $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id");
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id;

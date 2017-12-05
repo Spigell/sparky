@@ -169,6 +169,74 @@ And the by setting `is_downstream` field to `true` at the downstream project `sp
 
     is_downstream: true
 
+# Sparky plugins
+
+Sparky plugins are extensions points to add extra functionality to Sparky builds.
+
+These are Perl6 modules get run _after_ a Sparky project finishes or in other words when a build completes.
+
+To use Sparky plugins you should:
+
+* Install plugins as Perl6 modules
+
+* Configure plugins in project's `sparky.yaml` file
+
+## Install Sparky plugins
+
+You should install a module on the same server where you run Sparky at. For instance:
+
+    $ zef install Sparky::Plugin::Email # Sparky plugin to send email notifications
+
+## Configure Sparky
+
+In project's `sparky.yaml` file define plugins section, it should be list of Plugins and its configurations.
+
+For instance:
+
+    $ cat sparky.yaml
+
+    plugins:
+      - "Sparky::Plugin::Email" :
+        - parameters:
+          - message: "I finish"
+          - to: "happy@user.email"
+
+## Creating Sparky plugins
+
+Technically speaking  Sparky plugins should be just Perl6 modules. 
+
+For instance, for mentioned module Sparky::Plugin::Email we might have this header lines:
+
+  use v6;
+
+  unit module Sparky::Plugin::Email;
+
+
+That is it.
+
+The module should export `run` routine which is invoked when Sparky processes a plugin:
+
+    sub run ( %parameters ) {
+
+    }
+
+As we can see the `run` routine consumes its parameters as Perl6 Hash, these parameters are defined at mentioned `sparky.yaml` file,
+at plugin `parameters:` section, so this is how you might handle them:
+
+    sub run ( %parameters ) {
+
+      say "you passed message: " ~ %parameters<message>;
+      say "to this email address: " ~ %parameters<to>;
+
+    }
+
+You can use a special _predefined_ variables inside plugin code, they are:
+
+* `$SPARKY-PROJECT` - the project name
+* `$SPARKY-BUILD-ID` - the build number of current project build
+* `$SPARKY-BUILD-STATUS` - the status of the current build
+
+
 # Command line client
 
 You can build the certain project using sparky command client called `sparky-runner.pl6`:
