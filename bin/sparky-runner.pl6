@@ -133,10 +133,11 @@ sub MAIN (
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
-  # apply Sparky plugins
-  if  %sparrowdo-config<plugins> {
-    for %sparrowdo-config<plugins> -> $p {
-      say "Running Spark plugin $p ... ";
+  # Run Sparky plugins
+  if  %config<plugins> {
+    my $i =  %config<plugins>.iterator;
+    for 1 .. %config<plugins>.elems {
+      say "Run Sparky plugin "  ~ $i.pull-one ~ ' ...';
     }
   }
 
@@ -149,7 +150,6 @@ sub MAIN (
     say "BUILD SUCCEED <$project>";
 
   }
-
 
   CATCH {
 

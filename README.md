@@ -196,10 +196,14 @@ For instance:
     $ cat sparky.yaml
 
     plugins:
-      - "Sparky::Plugin::Email" :
-        - parameters:
-          - message: "I finished"
-          - to: "happy@user.email"
+      - Sparky::Plugin::Email:
+        parameters:
+          subject: "I finished"
+          to: "happy@user.email"
+          text: "here will be log"
+      - Sparky::Plugin::Hello:
+        parameters:
+          message: "Hello!"
 
 ## Creating Sparky plugins
 
@@ -225,8 +229,9 @@ at plugin `parameters:` section, so this is how you might handle them:
 
     sub run ( %parameters ) {
 
-      say "you passed message: " ~ %parameters<message>;
-      say "to this email address: " ~ %parameters<to>;
+      say "you passed subject: " ~ %parameters<subject>;
+      say "email address: " ~ %parameters<to>;
+      say "email text: " ~ %parameters<text>;
 
     }
 
