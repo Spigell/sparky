@@ -1,3 +1,8 @@
+# Next
+
+- Sparky modules support ( partitial )
+- Skip bootstrap by using `bootstrap: false` in sparky.yaml file
+
 # 0.0.23
 
 - remove old debug code 

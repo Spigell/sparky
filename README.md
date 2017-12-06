@@ -122,6 +122,14 @@ to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` f
 
 You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in Sparrowdo documentation.
 
+# Skip bootstrap
+
+Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host )
+use `bootstrap: false` option:
+
+    sparrowdo:
+      bootstrap: false
+
 # Purging old builds
 
 To remove old build set `keep_builds` parameter in `sparky.yaml`:
@@ -203,7 +211,7 @@ For instance:
           text: "here will be log"
       - Sparky::Plugin::Hello:
         parameters:
-          message: "Hello!"
+          name: Sparrow
 
 ## Creating Sparky plugins
 
@@ -211,16 +219,16 @@ Technically speaking  Sparky plugins should be just Perl6 modules.
 
 For instance, for mentioned module Sparky::Plugin::Email we might have this header lines:
 
-  use v6;
+    use v6;
 
-  unit module Sparky::Plugin::Email;
+    unit module Sparky::Plugin::Hello;
 
 
 That is it.
 
-The module should export `run` routine which is invoked when Sparky processes a plugin:
+The module should have `run` routine which is invoked when Sparky processes a plugin:
 
-    sub run ( %parameters ) {
+    our sub run ( %parameters ) {
 
     }
 
@@ -229,18 +237,21 @@ at plugin `parameters:` section, so this is how you might handle them:
 
     sub run ( %parameters ) {
 
-      say "you passed subject: " ~ %parameters<subject>;
-      say "email address: " ~ %parameters<to>;
-      say "email text: " ~ %parameters<text>;
+      say "Hello " ~ %parameters<name>;
 
     }
 
 You can use a special _predefined_ variables inside plugin code, they are:
 
+\*TODO:
+
 * `$SPARKY-PROJECT` - the project name
 * `$SPARKY-BUILD-ID` - the build number of current project build
 * `$SPARKY-BUILD-STATUS` - the status of the current build
 
+## An example Sparky plugin
+
+An example Sparky plugin `Sparky::Plugin::Hello` could be found here - [https://github.com/melezhik/sparky-plugin-hello](https://github.com/melezhik/sparky-plugin-hello)
 
 # Command line client
 

@@ -124,12 +124,18 @@ sub MAIN (
     $sparrowdo-run ~= " --verbose";
   }
 
+  %sparrowdo-config<bootstrap> = True unless %sparrowdo-config<bootstrap>:exists;
+
+  if  %sparrowdo-config<bootstrap> {
+    $sparrowdo-run ~= " --bootstrap";
+  }
+
   if $make-report {
     my $report-file = "$reports-dir/build-$build_id.txt";
-    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap 1>$report-file" ~ ' 2>&1');
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project 1>$report-file" ~ ' 2>&1');
     shell("echo >> $report-file && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project 1>>$report-file" ~ ' 2>&1');
   } else{
-    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project --bootstrap"  ~ ' 2>&1');
+    shell("$sparrowdo-run --task_run=directory" ~ '@path=' ~  "/var/data/sparky/$project"  ~ ' 2>&1');
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
@@ -137,7 +143,14 @@ sub MAIN (
   if  %config<plugins> {
     my $i =  %config<plugins>.iterator;
     for 1 .. %config<plugins>.elems {
-      say "Run Sparky plugin "  ~ $i.pull-one ~ ' ...';
+      my $plg = $i.pull-one;
+      my $plg-name = $plg.keys[0];
+      my %plg-params = $plg{$plg-name}<parameters>;
+      say "Load Sparky plugin $plg-name ...";
+      require ::($plg-name); 
+      say "Run Sparky plugin $plg-name ...";
+      ::($plg-name ~ '::&run')(%plg-params);
+
     }
   }
 
