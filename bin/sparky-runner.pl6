@@ -7,7 +7,9 @@ state $DIR;
 state $MAKE-REPORT;
 
 state %CONFIG;
-state $BUILD_STATE;
+state $SPARKY-BUILD-STATE;
+state $SPARKY-PROJECT;
+state $SPARKY-BUILD-ID;
 
 sub MAIN (
   Str  :$dir = "$*CWD",
@@ -21,6 +23,8 @@ sub MAIN (
   $MAKE-REPORT = $make-report;
 
   my $project = $dir.IO.basename;
+
+  $SPARKY-PROJECT = $project;
 
   my $reports-dir = "$dir/../.reports/$project".IO.absolute;
 
@@ -64,6 +68,8 @@ sub MAIN (
   
     $sth.finish;
   
+    $SPARKY-BUILD-ID = $build_id;
+
     say "RUN BUILD $project" ~ '@' ~ $build_id;
 
   } else {
@@ -143,9 +149,9 @@ sub MAIN (
   if $make-report {
     $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id");
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id;
-    $BUILD_STATE="OK";
+    $SPARKY-BUILD-STATE="OK";
   } else {
-    $BUILD_STATE="OK";
+    $SPARKY-BUILD-STATE="OK";
     say "BUILD SUCCEED <$project>";
 
   }
@@ -158,11 +164,11 @@ sub MAIN (
         if $make-report {
           say "BUILD FAILED $project" ~ '@' ~ $build_id;
           $dbh.do("UPDATE builds SET state = -1 WHERE id = $build_id");
-          $BUILD_STATE="FAILED";
+          $SPARKY-BUILD-STATE="FAILED";
 
         } else {
           say "BUILD FAILED <$project>";
-          $BUILD_STATE="FAILED";
+          $SPARKY-BUILD-STATE="FAILED";
         }
       }
 
@@ -177,18 +183,25 @@ sub MAIN (
       my %plg-params = $plg{$plg-name}<parameters>;
       my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
 
-      if ( $run-scope eq "fail" && $BUILD_STATE ne "FAILED" ) {
+      if ( $run-scope eq "fail" && $SPARKY-BUILD-STATE ne "FAILED" ) {
         last;
       }
 
-      if ( $run-scope eq "success" && $BUILD_STATE ne "OK" ) {
+      if ( $run-scope eq "success" && $SPARKY-BUILD-STATE ne "OK" ) {
         last;
       }
 
       say "Load Sparky plugin $plg-name ...";
       require ::($plg-name); 
       say "Run Sparky plugin $plg-name ...";
-      ::($plg-name ~ '::&run')(%plg-params);
+      ::($plg-name ~ '::&run')(
+          { 
+            project => $SPARKY-PROJECT, 
+            build-id => $SPARKY-BUILD-ID,  
+            build-state => $SPARKY-BUILD-STATE,
+          }, 
+          %plg-params
+      );
   
     }
   }
@@ -269,12 +282,10 @@ sub get-dbh ( $dir ) {
 
 LEAVE {
 
-  my $project = $DIR.IO.basename;
-
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
   say "BUILD SUMMARY";
-  say "STATE: $BUILD_STATE";
-  say "PROJECT: $project";
+  say "STATE: $SPARKY-BUILD-STATE";
+  say "PROJECT: $SPARKY-PROJECT";
   say "CONFIG: " ~ Dump(%CONFIG, :color(!$MAKE-REPORT));
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
 
@@ -289,7 +300,7 @@ LEAVE {
     if $MAKE-REPORT {
       shell(
         'sparky-runner.pl6' ~ 
-        " --marker=$project" ~ 
+        " --marker=$SPARKY-PROJECT" ~ 
         " --dir=" ~ $downstream_dir ~
         " --make-report" ~ 
         ' &'
@@ -297,7 +308,7 @@ LEAVE {
     } else {
       shell(
         'sparky-runner.pl6' ~ 
-        " --marker=$project" ~ 
+        " --marker=$SPARKY-PROJECT" ~ 
         " --dir=" ~ $downstream_dir ~
         ' &'
       ); 

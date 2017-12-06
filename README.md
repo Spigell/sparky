@@ -235,19 +235,25 @@ The module should have `run` routine which is invoked when Sparky processes a pl
 As we can see the `run` routine consumes its parameters as Perl6 Hash, these parameters are defined at mentioned `sparky.yaml` file,
 at plugin `parameters:` section, so this is how you might handle them:
 
-    sub run ( %parameters ) {
+    sub run ( %config, %parameters ) {
 
       say "Hello " ~ %parameters<name>;
 
     }
 
-You can use a special _predefined_ variables inside plugin code, they are:
+You can use `%config` Hash to access Sparky guts:
 
-\*TODO:
+* `%config<project>`  - the project name
+* `%config<build-id>` - the build number of current project build
+* `%cofig<state>`     - the state of the current build
 
-* `$SPARKY-PROJECT` - the project name
-* `$SPARKY-BUILD-ID` - the build number of current project build
-* `$SPARKY-BUILD-STATUS` - the status of the current build
+For example:
+
+    sub run ( %config, %parameters ) {
+
+      say "build id is: " ~ %parameters<build-id>;
+
+    }
 
 ## Limit plugin run scope
 
