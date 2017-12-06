@@ -249,6 +249,23 @@ You can use a special _predefined_ variables inside plugin code, they are:
 * `$SPARKY-BUILD-ID` - the build number of current project build
 * `$SPARKY-BUILD-STATUS` - the status of the current build
 
+## Limit plugin run scope
+
+You can defined _when_ to run plugin, here are 3 run scopes:
+
+* `anytime` - run plugin irrespectively of a build state. This is default value
+* `success` - run plugin only if build has succeeded
+* `fail`    - run plugin only if build has  failed
+
+Scopes are defined at `run_scope:` parameter:
+
+
+      - Sparky::Plugin::Hello:
+        run_scope: fail
+        parameters:
+          name: Sparrow
+
+
 ## An example Sparky plugin
 
 An example Sparky plugin `Sparky::Plugin::Hello` could be found here - [https://github.com/melezhik/sparky-plugin-hello](https://github.com/melezhik/sparky-plugin-hello)

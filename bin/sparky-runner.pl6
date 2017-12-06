@@ -139,20 +139,6 @@ sub MAIN (
     shell("echo && cd $dir && $sparrowdo-run --cwd=/var/data/sparky/$project" ~ ' 2>&1');
   }
 
-  # Run Sparky plugins
-  if  %config<plugins> {
-    my $i =  %config<plugins>.iterator;
-    for 1 .. %config<plugins>.elems {
-      my $plg = $i.pull-one;
-      my $plg-name = $plg.keys[0];
-      my %plg-params = $plg{$plg-name}<parameters>;
-      say "Load Sparky plugin $plg-name ...";
-      require ::($plg-name); 
-      say "Run Sparky plugin $plg-name ...";
-      ::($plg-name ~ '::&run')(%plg-params);
-
-    }
-  }
 
   if $make-report {
     $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id");
@@ -182,6 +168,30 @@ sub MAIN (
 
   }
 
+  # Run Sparky plugins
+  if  %config<plugins> {
+    my $i =  %config<plugins>.iterator;
+    for 1 .. %config<plugins>.elems {
+      my $plg = $i.pull-one;
+      my $plg-name = $plg.keys[0];
+      my %plg-params = $plg{$plg-name}<parameters>;
+      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
+
+      if ( $run-scope eq "fail" && $BUILD_STATE ne "FAILED" ) {
+        last;
+      }
+
+      if ( $run-scope eq "success" && $BUILD_STATE ne "OK" ) {
+        last;
+      }
+
+      say "Load Sparky plugin $plg-name ...";
+      require ::($plg-name); 
+      say "Run Sparky plugin $plg-name ...";
+      ::($plg-name ~ '::&run')(%plg-params);
+  
+    }
+  }
 
   # remove old builds
 
