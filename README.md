@@ -272,9 +272,12 @@ Scopes are defined at `run_scope:` parameter:
           name: Sparrow
 
 
-## An example Sparky plugin
+## An example Sparky plugins
 
-An example Sparky plugin `Sparky::Plugin::Hello` could be found here - [https://github.com/melezhik/sparky-plugin-hello](https://github.com/melezhik/sparky-plugin-hello)
+An example Sparky plugins are:
+
+* [Sparky::Plugin::Hello](https://github.com/melezhik/sparky-plugin-hello)
+* [Sparky::Plugin::Notify::Email](https://github.com/melezhik/sparky-plugin-notify-email)
 
 # Command line client
 
