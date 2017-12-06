@@ -243,9 +243,9 @@ at plugin `parameters:` section, so this is how you might handle them:
 
 You can use `%config` Hash to access Sparky guts:
 
-* `%config<project>`  - the project name
-* `%config<build-id>` - the build number of current project build
-* `%cofig<state>`     - the state of the current build
+* `%config<project>`      - the project name
+* `%config<build-id>`     - the build number of current project build
+* `%cofig<build-state>`   - the state of the current build
 
 For example:
 
