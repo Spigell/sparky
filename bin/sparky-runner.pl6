@@ -184,11 +184,11 @@ sub MAIN (
       my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
 
       if ( $run-scope eq "fail" && $SPARKY-BUILD-STATE ne "FAILED" ) {
-        last;
+        next;
       }
 
       if ( $run-scope eq "success" && $SPARKY-BUILD-STATE ne "OK" ) {
-        last;
+        next;
       }
 
       say "Load Sparky plugin $plg-name ...";
