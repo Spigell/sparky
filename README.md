@@ -228,7 +228,7 @@ That is it.
 
 The module should have `run` routine which is invoked when Sparky processes a plugin:
 
-    our sub run ( %parameters ) {
+    our sub run ( %config, %parameters ) {
 
     }
 
