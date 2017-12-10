@@ -174,37 +174,6 @@ sub MAIN (
 
   }
 
-  # Run Sparky plugins
-  if  %config<plugins> {
-    my $i =  %config<plugins>.iterator;
-    for 1 .. %config<plugins>.elems {
-      my $plg = $i.pull-one;
-      my $plg-name = $plg.keys[0];
-      my %plg-params = $plg{$plg-name}<parameters>;
-      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
-
-      if ( $run-scope eq "fail" && $SPARKY-BUILD-STATE ne "FAILED" ) {
-        next;
-      }
-
-      if ( $run-scope eq "success" && $SPARKY-BUILD-STATE ne "OK" ) {
-        next;
-      }
-
-      say "Load Sparky plugin $plg-name ...";
-      require ::($plg-name); 
-      say "Run Sparky plugin $plg-name ...";
-      ::($plg-name ~ '::&run')(
-          { 
-            project => $SPARKY-PROJECT, 
-            build-id => $SPARKY-BUILD-ID,  
-            build-state => $SPARKY-BUILD-STATE,
-          }, 
-          %plg-params
-      );
-  
-    }
-  }
 
   # remove old builds
 
@@ -281,6 +250,40 @@ sub get-dbh ( $dir ) {
 }
 
 LEAVE {
+
+  # Run Sparky plugins
+  my %config = %CONFIG;
+  if  %config<plugins> {
+    my $i =  %config<plugins>.iterator;
+    for 1 .. %config<plugins>.elems {
+      my $plg = $i.pull-one;
+      my $plg-name = $plg.keys[0];
+      my %plg-params = $plg{$plg-name}<parameters>;
+      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
+
+      #say "$plg-name, $run-scope, $SPARKY-BUILD-STATE";
+      if ( $run-scope eq "fail" and $SPARKY-BUILD-STATE ne "FAILED" ) {
+        next;
+      }
+
+      if ( $run-scope eq "success" and $SPARKY-BUILD-STATE ne "OK" ) {
+        next;
+      }
+
+      say "Load Sparky plugin $plg-name ...";
+      require ::($plg-name); 
+      say "Run Sparky plugin $plg-name ...";
+      ::($plg-name ~ '::&run')(
+          { 
+            project => $SPARKY-PROJECT, 
+            build-id => $SPARKY-BUILD-ID,  
+            build-state => $SPARKY-BUILD-STATE,
+          }, 
+          %plg-params
+      );
+  
+    }
+  }
 
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
   say "BUILD SUMMARY";
