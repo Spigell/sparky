@@ -255,6 +255,22 @@ For example:
 
     }
 
+Alternatively you may pass _some_ predefined parameters plugins:
+
+* %PROJECT% - equivalent of `%config<project>`
+* %BUILD-STATE% - equivalent of `%config<build-state>`
+* %BUILD-ID% - equivalent of `%config<build-id>`
+
+For example:
+
+
+    $ cat sparky.yaml
+
+    plugins:
+      - Sparky::Plugin::Hello:
+        parameters:
+          name: Sparrow from project %PROJECT%
+
 ## Limit plugin run scope
 
 You can defined _when_ to run plugin, here are 3 run scopes:

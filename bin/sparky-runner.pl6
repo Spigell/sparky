@@ -28,14 +28,7 @@ sub MAIN (
 
   my $reports-dir = "$dir/../.reports/$project".IO.absolute;
 
-  my %config = Hash.new;
-
-  if "$dir/sparky.yaml".IO ~~ :f {
-
-    %config = load-yaml(slurp "$dir/sparky.yaml");
-    %CONFIG = %config;
-
-  }
+  my %config = read-config($dir);
 
   mkdir $dir;
 
@@ -249,10 +242,29 @@ sub get-dbh ( $dir ) {
 
 }
 
+sub read-config ( $dir ) {
+
+  my %config = Hash.new;
+
+  if "$dir/sparky.yaml".IO ~~ :f {
+    my $yaml-str = slurp "$dir/sparky.yaml";
+    $yaml-str ~~ s/'%' BUILD '-' ID '%'/$SPARKY-BUILD-ID/  if $SPARKY-BUILD-ID;
+    $yaml-str ~~ s/'%' BUILD '-' STATE '%'/$SPARKY-BUILD-STATE/ if $SPARKY-BUILD-STATE;
+    $yaml-str ~~ s/'%' PROJECT '%'/$SPARKY-PROJECT/ if $SPARKY-PROJECT;
+    %config = load-yaml($yaml-str);
+    
+  }
+
+  return %config;
+
+}
+
 LEAVE {
 
   # Run Sparky plugins
-  my %config = %CONFIG;
+
+  my %config =  read-config($DIR);
+
   if  %config<plugins> {
     my $i =  %config<plugins>.iterator;
     for 1 .. %config<plugins>.elems {
@@ -289,16 +301,16 @@ LEAVE {
   say "BUILD SUMMARY";
   say "STATE: $SPARKY-BUILD-STATE";
   say "PROJECT: $SPARKY-PROJECT";
-  say "CONFIG: " ~ Dump(%CONFIG, :color(!$MAKE-REPORT));
+  say "CONFIG: " ~ Dump(%config, :color(!$MAKE-REPORT));
   say ">>>>>>>>>>>>>>>>>>>>>>>>>>>";
 
 
   # run downstream project
-  if %CONFIG<downstream> {
+  if %config<downstream> {
   
-    say "SCHEDULE BUILD for DOWNSTREAM project <" ~ %CONFIG<downstream> ~ "> ... \n";
+    say "SCHEDULE BUILD for DOWNSTREAM project <" ~ %config<downstream> ~ "> ... \n";
 
-    my $downstream_dir = ("$DIR/../" ~ %CONFIG<downstream>).IO.absolute;
+    my $downstream_dir = ("$DIR/../" ~ %config<downstream>).IO.absolute;
 
     if $MAKE-REPORT {
       shell(
