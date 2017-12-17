@@ -248,9 +248,9 @@ sub read-config ( $dir ) {
 
   if "$dir/sparky.yaml".IO ~~ :f {
     my $yaml-str = slurp "$dir/sparky.yaml";
-    $yaml-str ~~ s/'%' BUILD '-' ID '%'/$SPARKY-BUILD-ID/  if $SPARKY-BUILD-ID;
-    $yaml-str ~~ s/'%' BUILD '-' STATE '%'/$SPARKY-BUILD-STATE/ if $SPARKY-BUILD-STATE;
-    $yaml-str ~~ s/'%' PROJECT '%'/$SPARKY-PROJECT/ if $SPARKY-PROJECT;
+    $yaml-str ~~ s:g/'%' BUILD '-' ID '%'/$SPARKY-BUILD-ID/  if $SPARKY-BUILD-ID;
+    $yaml-str ~~ s:g/'%' BUILD '-' STATE '%'/$SPARKY-BUILD-STATE/ if $SPARKY-BUILD-STATE;
+    $yaml-str ~~ s:g/'%' PROJECT '%'/$SPARKY-PROJECT/ if $SPARKY-PROJECT;
     %config = load-yaml($yaml-str);
     
   }
