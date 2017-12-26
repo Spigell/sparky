@@ -103,8 +103,8 @@ sub MAIN (
     $sparrowdo-run ~= " --ssh_user=" ~ %sparrowdo-config<ssh_user>;
   }
 
-  if  %config<ssh_private_key> {
-    $sparrowdo-run ~= " --ssh_private_key=" ~ %config<ssh_private_key>;
+  if  %sparrowdo-config<ssh_private_key> {
+    $sparrowdo-run ~= " --ssh_private_key=" ~ %sparrowdo-config<ssh_private_key>;
   }
 
   if %sparrowdo-config<ssh_port> {
