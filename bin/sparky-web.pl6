@@ -13,7 +13,8 @@ get '/' => sub {
   my $dbh = get-dbh();
 
   my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT * FROM builds order by dt desc
+  SELECT id, project, state, datetime(dt, 'localtime') AS dt FROM builds order by dt desc;
+  #SELECT * FROM builds order by dt desc
   STATEMENT
 
   $sth.execute();
